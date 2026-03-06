@@ -1,6 +1,6 @@
 """
-Model performance visualizations: ROC curve, PR curve, confusion matrix, feature importance, risk distribution.
-Saved to artifacts/plots/.
+Model performance visualizations: ROC curve, PR curve, confusion matrix, calibration curve,
+feature importance, risk distribution. Saved to artifacts/plots/.
 """
 import logging
 from pathlib import Path
@@ -10,6 +10,7 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
+from sklearn.calibration import calibration_curve
 from sklearn.metrics import confusion_matrix, precision_recall_curve, roc_curve
 
 from src.config import PLOTS_DIR
@@ -53,6 +54,33 @@ def plot_pr_curve(y_true: np.ndarray, y_proba: np.ndarray, output_path: Path | N
     plt.xlabel("Recall")
     plt.ylabel("Precision")
     plt.title("Precision-Recall Curve (Out-of-Fold)")
+    plt.tight_layout()
+    plt.savefig(output_path, dpi=100)
+    plt.close()
+    logger.info("Saved %s", output_path)
+    return output_path
+
+
+def plot_calibration_curve(y_true: np.ndarray, y_proba: np.ndarray, output_path: Path | None = None) -> Path:
+    """
+    Plot reliability (calibration) curve: predicted vs observed frequency.
+    Illustrative only for small datasets; use for qualitative assessment.
+    """
+    output_path = output_path or _ensure_plots_dir() / "calibration_curve.png"
+    n_bins = min(10, max(2, len(np.unique(y_proba)) - 1))
+    try:
+        frac_pos, mean_pred = calibration_curve(y_true, y_proba, n_bins=n_bins)
+    except Exception:
+        frac_pos, mean_pred = np.array([0.0, 1.0]), np.array([0.0, 1.0])
+    plt.figure(figsize=(6, 5))
+    plt.plot(mean_pred, frac_pos, "s-", color="darkorange", lw=2, label="Model")
+    plt.plot([0, 1], [0, 1], "k--", lw=2, label="Perfectly calibrated")
+    plt.xlim([0.0, 1.0])
+    plt.ylim([0.0, 1.05])
+    plt.xlabel("Mean predicted probability")
+    plt.ylabel("Fraction of positives")
+    plt.title("Calibration Curve (Out-of-Fold)\nIllustrative only — small sample")
+    plt.legend(loc="lower right")
     plt.tight_layout()
     plt.savefig(output_path, dpi=100)
     plt.close()
@@ -116,10 +144,11 @@ def generate_all_plots(
     feature_importance: list[tuple[str, float]],
     plots_dir: Path | None = None,
 ) -> None:
-    """Generate ROC, PR, confusion matrix, feature importance, and risk distribution."""
+    """Generate ROC, PR, confusion matrix, calibration curve, feature importance, and risk distribution."""
     d = plots_dir or _ensure_plots_dir()
     plot_roc_curve(y_true, y_proba, d / "roc_curve.png")
     plot_pr_curve(y_true, y_proba, d / "pr_curve.png")
     plot_confusion_matrix(y_true, y_proba, d / "confusion_matrix.png")
+    plot_calibration_curve(y_true, y_proba, d / "calibration_curve.png")
     plot_feature_importance(feature_importance, d / "feature_importance.png")
     plot_risk_distribution(y_proba, d / "risk_distribution.png")

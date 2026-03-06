@@ -10,21 +10,29 @@
     "roc_auc": 0.711111111111111,
     "precision": 0.2,
     "recall": 0.2,
-    "f1_score": 0.2
+    "f1": 0.2,
+    "brier_score": 0.056668209664122914
   },
   "model_comparison": {
     "logistic_regression": {
       "roc_auc": 0.711111111111111,
       "precision": 0.2,
       "recall": 0.2,
-      "f1_score": 0.2
+      "f1": 0.2,
+      "brier_score": 0.056668209664122914
     },
     "random_forest": {
       "roc_auc": 0.711111111111111,
       "precision": 0.0,
       "recall": 0.0,
-      "f1_score": 0.0
+      "f1": 0.0,
+      "brier_score": 0.06432
     }
+  },
+  "calibration_metrics": {
+    "brier_score": 0.056668209664122914,
+    "interpretation": "Lower Brier score indicates better probabilistic accuracy; values near 0.25 are no better than chance for balanced binary outcomes.",
+    "caveat": "Calibration results are illustrative only: the dataset is very small and out-of-fold estimates have high variance. Do not rely on these for production thresholds."
   },
   "top_risk_merchants": [
     {
@@ -636,6 +644,7 @@
   "caveats": [
     "Sample data only; not representative of production.",
     "Model comparison uses LogisticRegression vs RandomForest; chosen by ROC AUC.",
-    "External context (ClarityPay) is scraped; site structure may change."
+    "External context (ClarityPay) is scraped; site structure may change.",
+    "Calibration (Brier score, calibration curve) is illustrative only due to very small dataset."
   ]
 }

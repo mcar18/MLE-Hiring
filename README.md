@@ -6,6 +6,29 @@ This repo implements a production-style merchant underwriting pipeline: ingestio
 
 ---
 
+## Architecture Overview
+
+```mermaid
+flowchart TB
+    subgraph Sources["Data sources"]
+        CSV[merchants.csv]
+        API[Mock API]
+        REST[REST Countries API]
+        PDF[PDF ingestion]
+        Scraper[ClarityPay scraper]
+    end
+    Sources --> Validate["Validation / Collation"]
+    Validate --> Feat["Feature Engineering"]
+    Feat --> Model["Model Training & Comparison"]
+    Model --> Portfolio["Portfolio Risk Aggregation"]
+    Portfolio --> Report["LLM / Stub Report Generation"]
+    Report --> Artifacts["Artifacts"]
+```
+
+The pipeline is designed around **modular ingestion** (each source has a dedicated ingest path and validated interface), **validated interfaces** (Pydantic/contracts for CSV and API), **baseline model comparison** (LogisticRegression vs RandomForest with out-of-fold evaluation), and **artifact-driven reporting** (all outputs written to `artifacts/` for the LLM and downstream consumers).
+
+---
+
 ## Setup
 
 ### 1. Virtual environment
@@ -71,7 +94,9 @@ Outputs are under **`artifacts/`**:
 | `collated.parquet` | One row per merchant (all sources merged) |
 | `featured.parquet` | Collated + features + predictions |
 | `model.pkl` | Trained risk model |
+| `model_comparison.json` | Metrics (roc_auc, precision, recall, f1, brier_score) per model |
 | `portfolio_summary.json` | Expected high-risk count, avg risk, expected loss proxy |
+| `plots/` | ROC, PR, confusion matrix, **calibration_curve.png**, feature importance, risk distribution |
 | `report_context.json` | Inputs passed to the LLM |
 | `underwriting_report.md` | Generated report |
 | `llm_prompt.txt` | Prompt sent to the LLM |

@@ -14,6 +14,7 @@ import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import (
+    brier_score_loss,
     f1_score,
     precision_recall_curve,
     precision_recall_fscore_support,
@@ -42,12 +43,19 @@ def make_target(df: pd.DataFrame, threshold: float = DISPUTE_RATE_HIGH_RISK_THRE
 
 
 def _compute_metrics(y_true: np.ndarray, y_pred: np.ndarray, y_proba: np.ndarray) -> dict:
-    """ROC AUC, precision, recall, F1. y_proba is probability of positive class."""
+    """ROC AUC, precision, recall, F1, Brier score. y_proba is probability of positive class."""
     roc_auc = roc_auc_score(y_true, y_proba) if np.unique(y_true).size > 1 else 0.0
     prec, rec, f1, _ = precision_recall_fscore_support(
         y_true, y_pred, average="binary", zero_division=0
     )
-    return {"roc_auc": float(roc_auc), "precision": float(prec), "recall": float(rec), "f1_score": float(f1)}
+    brier = brier_score_loss(y_true, y_proba)
+    return {
+        "roc_auc": float(roc_auc),
+        "precision": float(prec),
+        "recall": float(rec),
+        "f1": float(f1),
+        "brier_score": float(brier),
+    }
 
 
 def _out_of_fold_predictions(
@@ -83,7 +91,8 @@ def _out_of_fold_predictions(
         "roc_auc": float(np.mean([m["roc_auc"] for m in fold_metrics])),
         "precision": float(np.mean([m["precision"] for m in fold_metrics])),
         "recall": float(np.mean([m["recall"] for m in fold_metrics])),
-        "f1_score": float(np.mean([m["f1_score"] for m in fold_metrics])),
+        "f1": float(np.mean([m["f1"] for m in fold_metrics])),
+        "brier_score": float(np.mean([m["brier_score"] for m in fold_metrics])),
     }
 
     # Refit on full data for saving
@@ -121,7 +130,7 @@ def train_model(
         rf.fit(X, y)
         proba = rf.predict_proba(X)
         oof_proba = proba[:, 1] if proba.shape[1] > 1 else proba[:, 0]
-        degenerate = {"roc_auc": 0.0, "precision": 0.0, "recall": 0.0, "f1_score": 0.0}
+        degenerate = {"roc_auc": 0.0, "precision": 0.0, "recall": 0.0, "f1": 0.0, "brier_score": 0.0}
         model_comparison = {"logistic_regression": degenerate, "random_forest": degenerate}
         ensure_dir(MODEL_COMPARISON_JSON)
         save_json(model_comparison, MODEL_COMPARISON_JSON)
@@ -158,14 +167,14 @@ def train_model(
 
     # Selection: better ROC AUC; if tie, better F1 (documented in code)
     if metrics_rf["roc_auc"] >= metrics_lr["roc_auc"]:
-        if metrics_rf["roc_auc"] == metrics_lr["roc_auc"] and metrics_lr["f1_score"] > metrics_rf["f1_score"]:
+        if metrics_rf["roc_auc"] == metrics_lr["roc_auc"] and metrics_lr["f1"] > metrics_rf["f1"]:
             chosen_name, chosen_model, chosen_metrics, oof_proba = "logistic_regression", model_lr, metrics_lr, oof_lr
         else:
             chosen_name, chosen_model, chosen_metrics, oof_proba = "random_forest", model_rf, metrics_rf, oof_rf
     else:
         chosen_name, chosen_model, chosen_metrics, oof_proba = "logistic_regression", model_lr, metrics_lr, oof_lr
 
-    logger.info("Chosen model: %s (ROC AUC=%.4f, F1=%.4f)", chosen_name, chosen_metrics["roc_auc"], chosen_metrics["f1_score"])
+    logger.info("Chosen model: %s (ROC AUC=%.4f, F1=%.4f)", chosen_name, chosen_metrics["roc_auc"], chosen_metrics["f1"])
 
     # Feature importance: only for tree model; for LR we use abs(coef_). For RF we use feature_importances_
     if hasattr(chosen_model, "feature_importances_"):

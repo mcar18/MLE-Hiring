@@ -151,6 +151,21 @@ def build_report_context(
     except FileNotFoundError:
         model_comparison = {}
 
+    # Calibration: Brier score and interpretation for report. Illustrative only — small dataset.
+    calibration_brier = None
+    if model_metrics:
+        calibration_brier = model_metrics.get("brier_score")
+    if calibration_brier is None and model_comparison:
+        for m in model_comparison.values():
+            if isinstance(m, dict) and m.get("brier_score") is not None:
+                calibration_brier = m.get("brier_score")
+                break
+    calibration_metrics = {
+        "brier_score": calibration_brier,
+        "interpretation": "Lower Brier score indicates better probabilistic accuracy; values near 0.25 are no better than chance for balanced binary outcomes.",
+        "caveat": "Calibration results are illustrative only: the dataset is very small and out-of-fold estimates have high variance. Do not rely on these for production thresholds.",
+    }
+
     recommendation, conditions = _compute_underwriting_recommendation(portfolio, top_risk)
 
     feature_importance_ranking = feature_importance or []
@@ -159,6 +174,7 @@ def build_report_context(
         "portfolio_summary": portfolio,
         "model_metrics": model_metrics or {},
         "model_comparison": model_comparison,
+        "calibration_metrics": calibration_metrics,
         "top_risk_merchants": top_risk,
         "risk_drivers": risk_drivers,
         "feature_importance_ranking": feature_importance_ranking,
@@ -177,6 +193,7 @@ def build_report_context(
             "Sample data only; not representative of production.",
             "Model comparison uses LogisticRegression vs RandomForest; chosen by ROC AUC.",
             "External context (ClarityPay) is scraped; site structure may change.",
+            "Calibration (Brier score, calibration curve) is illustrative only due to very small dataset.",
         ],
     }
     return context

@@ -24,11 +24,13 @@ The report must include these sections (use markdown headers). Keep the total re
 
 7. **Document Insights (PDF)** — One short paragraph using pdf_insights (the pdf_summary from the cleaned PDF). Do not invent content.
 
-8. **Model Comparison** — One short paragraph comparing logistic_regression vs random_forest metrics (roc_auc, precision, recall, f1_score) from model_comparison. State which model was chosen and why.
+8. **Model Comparison** — One short paragraph comparing logistic_regression vs random_forest metrics (roc_auc, precision, recall, f1, brier_score) from model_comparison. State which model was chosen and why.
 
-9. **Recommendations & Controls** — 3–5 bullet recommendations (e.g. review thresholds, monitoring). Include the underwriting_conditions from the context (e.g. manual review if prob_high_risk > 0.5, or if internal_risk_flag == high).
+9. **Calibration & Probability Quality** — Use calibration_metrics from the context. Explain whether predicted probabilities appear roughly aligned with observed outcomes (e.g. from the calibration curve and Brier score). Note why calibration matters for underwriting thresholds (e.g. a 0.3 probability should correspond to ~30% observed high-risk rate when setting review cutoffs). State clearly that the small sample size limits confidence and that calibration results are illustrative only.
 
-10. **Caveats & Assumptions** — List the caveats and assumptions provided. Add one line on model limitations.
+10. **Recommendations & Controls** — 3–5 bullet recommendations (e.g. review thresholds, monitoring). Include the underwriting_conditions from the context (e.g. manual review if prob_high_risk > 0.5, or if internal_risk_flag == high).
+
+11. **Caveats & Assumptions** — List the caveats and assumptions provided. Add one line on model limitations.
 
 **Underwriting Recommendation:** You must state clearly at the end: **Recommendation: [Approve | Approve with Conditions | Decline]** and list the conditions when applicable (from underwriting_conditions). Use only the recommendation and conditions from the context; do not invent new ones.
 """

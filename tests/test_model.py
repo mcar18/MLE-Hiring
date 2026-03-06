@@ -38,11 +38,13 @@ def test_train_model_returns_metrics_and_model(sample_feature_df):
     assert "roc_auc" in metrics
     assert "precision" in metrics
     assert "recall" in metrics
-    assert "f1_score" in metrics
+    assert "f1" in metrics
+    assert "brier_score" in metrics
     assert hasattr(model, "predict")
     assert 0 <= metrics["roc_auc"] <= 1
     assert 0 <= metrics["precision"] <= 1
     assert 0 <= metrics["recall"] <= 1
+    assert 0 <= metrics["brier_score"] <= 1
     assert len(oof_proba) == len(sample_feature_df)
     assert "logistic_regression" in model_comparison
     assert "random_forest" in model_comparison

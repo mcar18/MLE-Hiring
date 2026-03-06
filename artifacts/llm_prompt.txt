@@ -17,11 +17,13 @@ The report must include these sections (use markdown headers). Keep the total re
 
 7. **Document Insights (PDF)** — One short paragraph using pdf_insights (the pdf_summary from the cleaned PDF). Do not invent content.
 
-8. **Model Comparison** — One short paragraph comparing logistic_regression vs random_forest metrics (roc_auc, precision, recall, f1_score) from model_comparison. State which model was chosen and why.
+8. **Model Comparison** — One short paragraph comparing logistic_regression vs random_forest metrics (roc_auc, precision, recall, f1, brier_score) from model_comparison. State which model was chosen and why.
 
-9. **Recommendations & Controls** — 3–5 bullet recommendations (e.g. review thresholds, monitoring). Include the underwriting_conditions from the context (e.g. manual review if prob_high_risk > 0.5, or if internal_risk_flag == high).
+9. **Calibration & Probability Quality** — Use calibration_metrics from the context. Explain whether predicted probabilities appear roughly aligned with observed outcomes (e.g. from the calibration curve and Brier score). Note why calibration matters for underwriting thresholds (e.g. a 0.3 probability should correspond to ~30% observed high-risk rate when setting review cutoffs). State clearly that the small sample size limits confidence and that calibration results are illustrative only.
 
-10. **Caveats & Assumptions** — List the caveats and assumptions provided. Add one line on model limitations.
+10. **Recommendations & Controls** — 3–5 bullet recommendations (e.g. review thresholds, monitoring). Include the underwriting_conditions from the context (e.g. manual review if prob_high_risk > 0.5, or if internal_risk_flag == high).
+
+11. **Caveats & Assumptions** — List the caveats and assumptions provided. Add one line on model limitations.
 
 **Underwriting Recommendation:** You must state clearly at the end: **Recommendation: [Approve | Approve with Conditions | Decline]** and list the conditions when applicable (from underwriting_conditions). Use only the recommendation and conditions from the context; do not invent new ones.
 
@@ -39,21 +41,29 @@ Context (JSON):
     "roc_auc": 0.711111111111111,
     "precision": 0.2,
     "recall": 0.2,
-    "f1_score": 0.2
+    "f1": 0.2,
+    "brier_score": 0.056668209664122914
   },
   "model_comparison": {
     "logistic_regression": {
       "roc_auc": 0.711111111111111,
       "precision": 0.2,
       "recall": 0.2,
-      "f1_score": 0.2
+      "f1": 0.2,
+      "brier_score": 0.056668209664122914
     },
     "random_forest": {
       "roc_auc": 0.711111111111111,
       "precision": 0.0,
       "recall": 0.0,
-      "f1_score": 0.0
+      "f1": 0.0,
+      "brier_score": 0.06432
     }
+  },
+  "calibration_metrics": {
+    "brier_score": 0.056668209664122914,
+    "interpretation": "Lower Brier score indicates better probabilistic accuracy; values near 0.25 are no better than chance for balanced binary outcomes.",
+    "caveat": "Calibration results are illustrative only: the dataset is very small and out-of-fold estimates have high variance. Do not rely on these for production thresholds."
   },
   "top_risk_merchants": [
     {
@@ -665,7 +675,8 @@ Context (JSON):
   "caveats": [
     "Sample data only; not representative of production.",
     "Model comparison uses LogisticRegression vs RandomForest; chosen by ROC AUC.",
-    "External context (ClarityPay) is scraped; site structure may change."
+    "External context (ClarityPay) is scraped; site structure may change.",
+    "Calibration (Brier score, calibration curve) is illustrative only due to very small dataset."
   ]
 }
 
