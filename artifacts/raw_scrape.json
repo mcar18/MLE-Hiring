@@ -1,33 +1,267 @@
 {
   "url": "https://www.claritypay.com",
+  "pages": {
+    "/": {
+      "url": "https://www.claritypay.com",
+      "banner_stats": {
+        "merchant_count": "1900+",
+        "credit_issued": "$1.2B+",
+        "growth_rate": "25%",
+        "nps_score": "+91"
+      },
+      "public_stats": {
+        "1900+": "Merchants Served",
+        "$1.2B+": "Credit Issued",
+        "25%": "MoM Customer Growth",
+        "+91": "Net Promoter Score"
+      },
+      "value_propositions": [
+        "Flexible payment plansfor the momentsthat matter",
+        "Pay-over-time plans with clear terms and service excellence \u2014 making important purchases possible with peace of mind.",
+        "More Ways to Pay, More Peace of Mind",
+        "From upfront clarity to better rates, flexible scheduling, and live support, ClarityPay makes managing big purchases simple.",
+        "Instant Pre-Approval, No Credit Impact",
+        "Understand full approval amounts and offers available with no hard pull credit pulls prior to commitment.**",
+        "Financing plans that are built on clarity, removing the guesswork with straightforward terms and disclosures.",
+        "AutoPay & Scheduling Tools",
+        "Set up AutoPay or use advance scheduling tools to stay on track with ease or pay in advance without penalty.",
+        "Live Support, 7 Days a Week",
+        "Understand full approval amounts and offers available with no hard pull credit pulls prior to commitment.",
+        "Our financing plans are built on clarity, removing the guesswork with straightforward terms and disclosures.",
+        "Set up autopay or use advance scheduling tools to stay on track with ease or pay in advance without penalty.",
+        "Sign in to view the next payment due, add a payment method, or enable AutoPay.",
+        "English & Spanish support when you need us most."
+      ],
+      "partners": [
+        "ClarityPay logo",
+        "Google logo",
+        "Proud Partner",
+        "Club Wyndham logo",
+        "Safe Streets logo",
+        "Removery logo",
+        "Margaritaville Vacation Club logo"
+      ]
+    },
+    "/about-us": {
+      "url": "https://www.claritypay.com/about-us",
+      "banner_stats": {
+        "merchant_count": ",",
+        "growth_rate": "8"
+      },
+      "public_stats": {
+        ",": "Merchants Served",
+        "8": "MoM Customer Growth"
+      },
+      "value_propositions": [
+        "Credit solutions that power next generation commerce",
+        "ClarityPay delivers point-of-sale credit solutions that unlock growth and loyalty opportunities for merchants and \u2028consumers alike.",
+        "Decades of credit, risk, lending, and payments expertise\u2014guiding a global team of 100+ technology and financing professionals.",
+        "We solve credit challenges with purpose, driven by data and collaboration, always learning to unlock new opportunities for merchants and customers."
+      ],
+      "partners": [
+        "ClarityPay logo",
+        "ClarityPay logo mark",
+        "General Partner & Co-FounderVesey Ventures",
+        "General Partner & Co-Founder",
+        "Gardiner GerrardCo-Founder & Managing PartnerTTV Capital",
+        "Co-Founder & Managing PartnerTTV Capital",
+        "Co-Founder & Managing Partner",
+        "Lynne LaubeVenture PartnerTTV Capital",
+        "Venture PartnerTTV Capital",
+        "Venture Partner",
+        "Peter SterlingPartnerOutpost Ventures",
+        "PartnerOutpost Ventures",
+        "Partner"
+      ]
+    },
+    "/careers": {
+      "url": "https://www.claritypay.com/careers",
+      "banner_stats": {
+        "merchant_count": ",",
+        "growth_rate": "8"
+      },
+      "public_stats": {
+        ",": "Merchants Served",
+        "8": "MoM Customer Growth"
+      },
+      "value_propositions": [
+        "At ClarityPay, we tackle credit\u2019s toughest challenges\u2014empowering merchants across retail, home, health, auto, and more to grow faster, while helping their customers get approved with confidence."
+      ],
+      "partners": [
+        "ClarityPay logo"
+      ]
+    },
+    "/claritypay-program-services-llc-licenses-registrations": {
+      "url": "https://www.claritypay.com/claritypay-program-services-llc-licenses-registrations",
+      "banner_stats": {
+        "growth_rate": "8"
+      },
+      "public_stats": {
+        "8": "MoM Customer Growth"
+      },
+      "value_propositions": [],
+      "partners": [
+        "ClarityPay logo"
+      ]
+    },
+    "/contact-us": {
+      "url": "https://www.claritypay.com/contact-us",
+      "banner_stats": {
+        "growth_rate": "8"
+      },
+      "public_stats": {
+        "8": "MoM Customer Growth"
+      },
+      "value_propositions": [
+        "Customer Support"
+      ],
+      "partners": [
+        "ClarityPay logo"
+      ]
+    },
+    "/faqs": {
+      "url": "https://www.claritypay.com/faqs",
+      "banner_stats": {
+        "growth_rate": "8"
+      },
+      "public_stats": {
+        "8": "MoM Customer Growth"
+      },
+      "value_propositions": [
+        "At this time, ClarityPay only supports loans with the individual that applies, and does not offer joint or cosigned loans",
+        "Once you sign in, you will see a summary of your loan, payment plan, amount due, and amount due date. This is also where you can adjust your payment method as needed or turn on AutoPay.",
+        "Please reach out to support@claritypay.com. Ensure you email us from your registered email address on your loan account to help validate your identity.",
+        "Sign in and click on \u2018AutoPay\u2019 or \u2018Make Payment\u2019 on the dashboard. In either destination you will see the opportunity to add or modify your payment method. Also, you can update your payment details on the Profile & Settings page.",
+        "Call us at 1-800-272-6100 between 8am and 9pm ET and our support team will assist you in turning off AutoPay.Please be sure to call us\u202fat least 3 days before\u202fyour next payment date to ensure your changes go into effect prior to the scheduled date.",
+        "Call us at 1-800-272-6100 and we\u2019ll be happy to help modify your payment schedule to better work for you. Our customer support team is available daily from 8am to 9pm ET.",
+        "Payments that are successfully processed will appear in your bank or credit/debit account as ClarityPay \u2013 DR Bank."
+      ],
+      "partners": [
+        "ClarityPay logo"
+      ]
+    },
+    "/for-business": {
+      "url": "https://www.claritypay.com/for-business",
+      "banner_stats": {
+        "merchant_count": "1900+",
+        "credit_issued": "$1.2B+",
+        "growth_rate": "25%",
+        "nps_score": "+91"
+      },
+      "public_stats": {
+        "1900+": "Merchants Served",
+        "$1.2B+": "Credit Issued",
+        "25%": "MoM Customer Growth",
+        "+91": "Net Promoter Score"
+      },
+      "value_propositions": [
+        "Tailored point-of-sale credit solutionsto drive more \u2028acquisition & loyalty",
+        "ClarityPay gives more of your customers a better way to pay over time.With a program designed around your strategies, ClarityPay drives acquisition, sales, loyalty, and seamless omnichannel experiences.",
+        "Full suite of products to help customers make purchases more accessible in the moment: true 0%, promotional financing and extended payment plans. \u00a0All configured to maximize growth at the best returns for your business.",
+        "From super-prime to sub-prime, more of your customers will get access to financing, without sacrificing responsible rates.",
+        "Dedicated Credit for Repurchase",
+        "Your customers, your dedicated credit \u2014 we work with you on seamless repeat purchase journeys and the option to offer a private-label experience. We never cross-sell your customer\u2019s purchase power to competitors.",
+        "Omnichannel financing that works wherever you do business\u2014online, in-store, telesales, or mobile\u2014delivering a seamless, unified experience for every customer.",
+        "\"I'm grateful for the speed at which ClarityPay is willing to adapt to meet our goals. In my world, the needs of the customer continue to shift, and having a financing partner that is willing to shift with you makes all the difference.\"",
+        "Seamless to launch, simple to scale, live 7-day support",
+        "Integration is effortless, with dedicated teams ensuring your systems and brand standards are supported from day one. Both merchants and customers get reliable, responsive help every day of the week, creating a smooth experience at every touchpoint.",
+        "Industry expertise meets flexible technology to meet the unique needs of every industry we serve.",
+        "Flexible payment options for \u00a0elective care and ideal treatments.",
+        "Provide financing for larger-ticket projects and renovations."
+      ],
+      "partners": [
+        "ClarityPay logo",
+        "Google logo",
+        "Proud Partner",
+        "Club Wyndham logo",
+        "Safe Streets logo",
+        "Removery logo",
+        "Margaritaville Vacation Club logo",
+        "Select from listMerchantPlatform / PartnerOther",
+        "Platform / Partner",
+        "- A company enabling or partnering with merchants"
+      ]
+    },
+    "/privacy-policy": {
+      "url": "https://www.claritypay.com/privacy-policy",
+      "banner_stats": {
+        "growth_rate": "8"
+      },
+      "public_stats": {
+        "8": "MoM Customer Growth"
+      },
+      "value_propositions": [
+        "To support and improve site functionality, and",
+        "If you have questions about this Privacy Notice, please contact us at support@claritypay.com.",
+        "Access. You have the right to request a copy of your personal data by mailing it to us on support@claritypay.com.",
+        "Deletion. You have the right to request for any personal data \u2013 that ClarityPay is not obliged to keep \u2013 to be deleted by mailing it to us on support@claritypay.com."
+      ],
+      "partners": [
+        "ClarityPay logo"
+      ]
+    }
+  },
+  "banner_stats": {
+    "merchant_count": "1900+",
+    "credit_issued": "$1.2B+",
+    "growth_rate": "25%",
+    "nps_score": "+91"
+  },
+  "public_stats": {
+    "1900+": "Merchants Served",
+    "$1.2B+": "Credit Issued",
+    "25%": "MoM Customer Growth",
+    "+91": "Net Promoter Score"
+  },
   "value_propositions": [
     "Flexible payment plansfor the momentsthat matter",
     "Pay-over-time plans with clear terms and service excellence \u2014 making important purchases possible with peace of mind.",
+    "More Ways to Pay, More Peace of Mind",
     "From upfront clarity to better rates, flexible scheduling, and live support, ClarityPay makes managing big purchases simple.",
     "Instant Pre-Approval, No Credit Impact",
     "Understand full approval amounts and offers available with no hard pull credit pulls prior to commitment.**",
-    "Understand full approval amounts and offers available with no hard pull credit pulls prior to commitment."
+    "Financing plans that are built on clarity, removing the guesswork with straightforward terms and disclosures.",
+    "AutoPay & Scheduling Tools",
+    "Set up AutoPay or use advance scheduling tools to stay on track with ease or pay in advance without penalty.",
+    "Live Support, 7 Days a Week",
+    "Understand full approval amounts and offers available with no hard pull credit pulls prior to commitment.",
+    "Our financing plans are built on clarity, removing the guesswork with straightforward terms and disclosures.",
+    "Set up autopay or use advance scheduling tools to stay on track with ease or pay in advance without penalty.",
+    "Sign in to view the next payment due, add a payment method, or enable AutoPay.",
+    "English & Spanish support when you need us most.",
+    "Credit solutions that power next generation commerce",
+    "ClarityPay delivers point-of-sale credit solutions that unlock growth and loyalty opportunities for merchants and \u2028consumers alike.",
+    "Decades of credit, risk, lending, and payments expertise\u2014guiding a global team of 100+ technology and financing professionals.",
+    "We solve credit challenges with purpose, driven by data and collaboration, always learning to unlock new opportunities for merchants and customers.",
+    "At ClarityPay, we tackle credit\u2019s toughest challenges\u2014empowering merchants across retail, home, health, auto, and more to grow faster, while helping their customers get approved with confidence.",
+    "Customer Support",
+    "At this time, ClarityPay only supports loans with the individual that applies, and does not offer joint or cosigned loans",
+    "Once you sign in, you will see a summary of your loan, payment plan, amount due, and amount due date. This is also where you can adjust your payment method as needed or turn on AutoPay.",
+    "Please reach out to support@claritypay.com. Ensure you email us from your registered email address on your loan account to help validate your identity.",
+    "Sign in and click on \u2018AutoPay\u2019 or \u2018Make Payment\u2019 on the dashboard. In either destination you will see the opportunity to add or modify your payment method. Also, you can update your payment details on the Profile & Settings page."
   ],
   "partners": [
     "ClarityPay logo",
     "Google logo",
     "Proud Partner",
     "Club Wyndham logo",
-    "LaseyAway Logo",
     "Safe Streets logo",
     "Removery logo",
-    "Margaritaville Vacation Club logo"
-  ],
-  "public_stats": {
-    "18": "Last Published: Wed Feb 18 2026 14:03:27 GMT+0000 (Coordinated Universal Time)",
-    "2026": "Last Published: Wed Feb 18 2026 14:03:27 GMT+0000 (Coordinated Universal Time)",
-    "14": "Last Published: Wed Feb 18 2026 14:03:27 GMT+0000 (Coordinated Universal Time)",
-    "03": "Last Published: Wed Feb 18 2026 14:03:27 GMT+0000 (Coordinated Universal Time)",
-    "27": "Last Published: Wed Feb 18 2026 14:03:27 GMT+0000 (Coordinated Universal Time)",
-    "0000": "Last Published: Wed Feb 18 2026 14:03:27 GMT+0000 (Coordinated Universal Time)",
-    ",": "(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':\nnew Date().getTime(),event:'gtm.js'});var",
-    "0": "(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':\nnew Date().getTime(),event:'gtm.js'});var",
-    "9": "(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':\nnew Date().getTime(),event:'gtm.js'});var",
-    "5": "(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':\nnew Date().getTime(),event:'gtm.js'});var"
-  }
+    "Margaritaville Vacation Club logo",
+    "ClarityPay logo mark",
+    "General Partner & Co-FounderVesey Ventures",
+    "General Partner & Co-Founder",
+    "Gardiner GerrardCo-Founder & Managing PartnerTTV Capital",
+    "Co-Founder & Managing PartnerTTV Capital",
+    "Co-Founder & Managing Partner",
+    "Lynne LaubeVenture PartnerTTV Capital",
+    "Venture PartnerTTV Capital",
+    "Venture Partner",
+    "Peter SterlingPartnerOutpost Ventures",
+    "PartnerOutpost Ventures",
+    "Partner",
+    "Select from listMerchantPlatform / PartnerOther",
+    "Platform / Partner",
+    "- A company enabling or partnering with merchants"
+  ]
 }

@@ -137,3 +137,31 @@
 2026-03-05 19:55:02 | INFO | src.utils.io_utils | Saved JSON: C:\Users\Owner\OneDrive\Documents\Python Scripts\MLE-Hiring\artifacts\report_context.json
 2026-03-05 19:55:19 | INFO | src.reporting.generate_report | Report saved: C:\Users\Owner\OneDrive\Documents\Python Scripts\MLE-Hiring\artifacts\underwriting_report.md
 2026-03-05 19:55:19 | INFO | __main__ | Pipeline complete. Artifacts in C:\Users\Owner\OneDrive\Documents\Python Scripts\MLE-Hiring\artifacts
+2026-03-05 23:51:36 | INFO | __main__ | Starting pipeline
+2026-03-05 23:51:37 | INFO | __main__ | Mock API is ready
+2026-03-05 23:51:37 | INFO | src.ingestion.csv_ingest | Loaded merchants CSV: C:\Users\Owner\OneDrive\Documents\Python Scripts\MLE-Hiring\data\merchants.csv (50 rows)
+2026-03-05 23:51:37 | INFO | __main__ | CSV: 50 valid rows, 0 errors
+2026-03-05 23:51:37 | INFO | src.ingestion.pdf_async_ingest | PDF extracted: C:\Users\Owner\OneDrive\Documents\Python Scripts\MLE-Hiring\data\sample_merchant_summary.pdf (619 chars, summary 500 chars)
+2026-03-05 23:51:37 | INFO | src.utils.io_utils | Saved JSON: C:\Users\Owner\OneDrive\Documents\Python Scripts\MLE-Hiring\artifacts\pdf_text.json
+2026-03-05 23:51:37 | INFO | src.utils.io_utils | Saved JSON: C:\Users\Owner\OneDrive\Documents\Python Scripts\MLE-Hiring\artifacts\pdf_summary.json
+2026-03-05 23:51:48 | INFO | src.utils.io_utils | Saved JSON: C:\Users\Owner\OneDrive\Documents\Python Scripts\MLE-Hiring\artifacts\raw_scrape.json
+2026-03-05 23:51:48 | INFO | src.utils.io_utils | Saved JSON: C:\Users\Owner\OneDrive\Documents\Python Scripts\MLE-Hiring\artifacts\clean_scrape.json
+2026-03-05 23:51:48 | INFO | src.utils.io_utils | Saved JSON: C:\Users\Owner\OneDrive\Documents\Python Scripts\MLE-Hiring\artifacts\claritypay_parsed.json
+2026-03-05 23:51:48 | INFO | src.ingestion.claritypay_scraper | ClarityPay scrape: banner_stats=1900+, pages=['/', '/about-us', '/careers', '/claritypay-program-services-llc-licenses-registrations', '/contact-us', '/faqs', '/for-business', '/privacy-policy']
+2026-03-05 23:51:56 | INFO | src.ingestion.collate | Collated 50 merchants
+2026-03-05 23:51:56 | INFO | __main__ | Collated: C:\Users\Owner\OneDrive\Documents\Python Scripts\MLE-Hiring\artifacts\collated.parquet
+2026-03-05 23:51:56 | INFO | src.features.feature_builder | Built features (no dispute_rate to avoid target leakage): monthly_volume, transaction_count, avg_ticket, volume_growth_proxy, internal_risk_flag_encoded, region_encoded, log_monthly_volume, log_transaction_count, binary_high_internal_flag, volume_per_transaction
+2026-03-05 23:51:56 | INFO | src.utils.io_utils | Saved JSON: C:\Users\Owner\OneDrive\Documents\Python Scripts\MLE-Hiring\artifacts\model_comparison.json
+2026-03-05 23:51:56 | INFO | src.modeling.train_model | Model comparison: LR {'roc_auc': 0.711111111111111, 'precision': 0.2, 'recall': 0.2, 'f1_score': 0.2} | RF {'roc_auc': 0.711111111111111, 'precision': 0.0, 'recall': 0.0, 'f1_score': 0.0}
+2026-03-05 23:51:56 | INFO | src.modeling.train_model | Chosen model: logistic_regression (ROC AUC=0.7111, F1=0.2000)
+2026-03-05 23:51:56 | INFO | src.modeling.train_model | Saved model: C:\Users\Owner\OneDrive\Documents\Python Scripts\MLE-Hiring\artifacts\model.pkl
+2026-03-05 23:51:56 | INFO | src.portfolio.aggregate_risk | Portfolio: expected_high_risk=3.54, avg_risk=0.0709, expected_loss_proxy=3946.89
+2026-03-05 23:51:56 | INFO | src.utils.io_utils | Saved JSON: C:\Users\Owner\OneDrive\Documents\Python Scripts\MLE-Hiring\artifacts\portfolio_summary.json
+2026-03-05 23:51:56 | INFO | src.modeling.plots | Saved C:\Users\Owner\OneDrive\Documents\Python Scripts\MLE-Hiring\artifacts\plots\roc_curve.png
+2026-03-05 23:51:57 | INFO | src.modeling.plots | Saved C:\Users\Owner\OneDrive\Documents\Python Scripts\MLE-Hiring\artifacts\plots\pr_curve.png
+2026-03-05 23:51:57 | INFO | src.modeling.plots | Saved C:\Users\Owner\OneDrive\Documents\Python Scripts\MLE-Hiring\artifacts\plots\confusion_matrix.png
+2026-03-05 23:51:57 | INFO | src.modeling.plots | Saved C:\Users\Owner\OneDrive\Documents\Python Scripts\MLE-Hiring\artifacts\plots\feature_importance.png
+2026-03-05 23:51:57 | INFO | src.modeling.plots | Saved C:\Users\Owner\OneDrive\Documents\Python Scripts\MLE-Hiring\artifacts\plots\risk_distribution.png
+2026-03-05 23:51:57 | INFO | src.utils.io_utils | Saved JSON: C:\Users\Owner\OneDrive\Documents\Python Scripts\MLE-Hiring\artifacts\report_context.json
+2026-03-05 23:52:14 | INFO | src.reporting.generate_report | Report saved: C:\Users\Owner\OneDrive\Documents\Python Scripts\MLE-Hiring\artifacts\underwriting_report.md
+2026-03-05 23:52:14 | INFO | __main__ | Pipeline complete. Artifacts in C:\Users\Owner\OneDrive\Documents\Python Scripts\MLE-Hiring\artifacts

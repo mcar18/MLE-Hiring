@@ -43,8 +43,10 @@ REST_COUNTRIES_RETRIES = 2
 
 # Scraping
 CLARITYPAY_URL = "https://www.claritypay.com"
+CLARITYPAY_BASE_DOMAIN = "www.claritypay.com"
 SCRAPE_TIMEOUT_SEC = 15
 SCRAPE_RATE_LIMIT_DELAY_SEC = 1.0
+SCRAPE_MAX_PAGES = 8  # cap on number of same-site pages to scrape
 USER_AGENT = "MLE-Hiring-Pipeline/1.0 (educational; rate-limited)"
 
 # Model
