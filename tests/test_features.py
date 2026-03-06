@@ -46,12 +46,19 @@ def test_build_features_missing_optional():
     assert len(out) == 1
     assert out["volume_growth_proxy"].iloc[0] == 1.0  # default when last_30d missing
     assert out["internal_risk_flag_encoded"].iloc[0] == 0
+    assert out["binary_high_internal_flag"].iloc[0] == 0
 
 
 def test_get_feature_columns():
     cols = get_feature_columns()
-    assert "dispute_rate" in cols
+    assert "dispute_rate" not in cols  # excluded to avoid target leakage
     assert "avg_ticket" in cols
+    assert "monthly_volume" in cols
+    assert "transaction_count" in cols
     assert "volume_growth_proxy" in cols
     assert "internal_risk_flag_encoded" in cols
     assert "region_encoded" in cols
+    assert "log_monthly_volume" in cols
+    assert "log_transaction_count" in cols
+    assert "binary_high_internal_flag" in cols
+    assert "volume_per_transaction" in cols

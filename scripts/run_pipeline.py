@@ -18,20 +18,20 @@ import requests
 
 from src.config import (
     ARTIFACTS_DIR,
-    CLARITYPAY_ARTIFACT,
     COLLATED_PARQUET,
     FEATURED_PARQUET,
     MOCK_API_BASE_URL,
     PDF_TEXT_JSON,
+    PDF_SUMMARY_JSON,
 )
 from src.logging_config import setup_logging, get_logger
 from src.ingestion.claritypay_scraper import scrape_and_save
 from src.ingestion.collate import collate
 from src.ingestion.csv_ingest import ingest_merchants_csv
-from src.ingestion.pdf_async_ingest import extract_pdf_text_async
+from src.ingestion.pdf_async_ingest import extract_pdf_text_async, save_pdf_summary
 from src.features.feature_builder import build_features
+from src.modeling.plots import generate_all_plots
 from src.modeling.train_model import train_model
-from src.modeling.predict import predict_risk
 from src.portfolio.aggregate_risk import aggregate_risk, save_portfolio_summary
 from src.reporting.generate_report import generate_report
 from src.utils.io_utils import save_json
@@ -91,11 +91,11 @@ def run_pipeline() -> None:
         # 2) PDF async
         pdf_result = asyncio.run(extract_pdf_text_async(PROJECT_ROOT / "data" / "sample_merchant_summary.pdf"))
         save_json(pdf_result, PDF_TEXT_JSON)
+        save_pdf_summary(pdf_result, PDF_SUMMARY_JSON)
 
-        # 3) Scrape ClarityPay
-        scrape_and_save(CLARITYPAY_ARTIFACT)
+        scrape_and_save()
 
-        # 4) Collation (calls mock API + REST Countries)
+        # 4) Collation (calls mock API + REST Countries) (calls mock API + REST Countries)
         collated_df = collate(merchants_df)
         collated_df.to_parquet(COLLATED_PARQUET, index=False)
         logger.info("Collated: %s", COLLATED_PARQUET)
@@ -103,21 +103,31 @@ def run_pipeline() -> None:
         # 5) Feature engineering
         feature_df = build_features(collated_df)
 
-        # 6) Train model
-        model, metrics = train_model(feature_df)
+        # 6) Train both baselines; OOF predictions; choose better by ROC AUC
+        chosen_model, chosen_metrics, oof_proba, model_comparison, feature_importance = train_model(feature_df)
+        feature_df["prob_high_risk"] = oof_proba
 
-        # 7) Predict on full set
-        feature_df["prob_high_risk"] = predict_risk(feature_df)
-
-        # 8) Portfolio risk
+        # 7) Portfolio risk (uses OOF proba)
         portfolio_metrics = aggregate_risk(feature_df, prob_col="prob_high_risk")
         save_portfolio_summary(portfolio_metrics)
 
-        # Save featured dataset (with predictions) for report context
+        # Save featured dataset (with OOF predictions) for report context
         feature_df.to_parquet(FEATURED_PARQUET, index=False)
 
-        # 9) LLM report
-        generate_report(model_metrics=metrics)
+        # 8) Plots: ROC, PR, confusion matrix, feature importance, risk distribution
+        y_true = (
+            feature_df["high_risk"].values
+            if "high_risk" in feature_df.columns
+            else (feature_df["dispute_rate"] > 0.002).astype(int).values
+        )
+        generate_all_plots(y_true, oof_proba, feature_importance)
+
+        # 9) LLM report (with model_comparison, feature_importance, recommendation)
+        generate_report(
+            model_metrics=chosen_metrics,
+            model_comparison=model_comparison,
+            feature_importance=feature_importance,
+        )
 
         logger.info("Pipeline complete. Artifacts in %s", ARTIFACTS_DIR)
     finally:

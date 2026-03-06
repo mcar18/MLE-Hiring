@@ -1,71 +1,64 @@
-# Underwriting Memo: BNPL Merchant Portfolio Risk Analysis
+# Underwriting Memo for BNPL Merchant Portfolio
 
 ## Executive Summary
-The BNPL merchant portfolio exhibits moderate risk, with an expected high-risk merchant count of approximately 3.46 out of 50 total merchants. The average predicted risk stands at 0.0692, leading to an expected loss proxy of $4,447.60. 
+The BNPL merchant portfolio presents a moderate risk profile, with an expected high-risk count of approximately 3.54 out of 50 merchants. The average predicted risk is 0.071, with an expected loss proxy of $3,946.87. **Recommendation: Approve with Conditions.**
 
-## Data & Methodology
-The risk model was built using a Random Forest algorithm, with performance metrics indicating a ROC AUC of 1.0, precision of 1.0, and recall of 1.0. Data sources include internal merchant transaction records and external insights from ClarityPay.
+## Data Sources & Methodology
+Data was sourced from various formats including CSV, mock API, REST Countries, and a PDF scrape from ClarityPay. The risk model was built using out-of-fold evaluation and compared against two baselines to ensure robustness.
 
 ## Portfolio Risk Overview
-- **Expected High-Risk Merchants:** 3.46
-- **Average Predicted Risk:** 0.0692
-- **Expected Loss Proxy:** $4,447.60
-- **Assumed Loss Rate:** 0.02
-- **Total Merchants:** 50
+The portfolio consists of 50 merchants, with an expected high-risk merchant count of 3.54. The average predicted risk is 0.071, while the expected loss proxy stands at $3,946.87. The risk distribution is as follows:
+- Minimum risk: 0.000000468
+- Mean risk: 0.071
+- Median risk: 0.032
+- 90th percentile risk: 0.167
 
 ## Top Risk Merchants
-1. **Merchant ID:** M005
-   - **Country:** United States
-   - **Monthly Volume:** $45,000
-   - **Dispute Rate:** 0.0025
-   - **Probability of High Risk:** 0.88
+The following are the top 10 merchants by predicted risk:
 
-2. **Merchant ID:** M002
-   - **Country:** United States
-   - **Monthly Volume:** $89,000
-   - **Dispute Rate:** 0.00238
-   - **Probability of High Risk:** 0.84
-
-3. **Merchant ID:** M017
-   - **Country:** United Kingdom
-   - **Monthly Volume:** $55,000
-   - **Dispute Rate:** 0.00212
-   - **Probability of High Risk:** 0.72
-
-4. **Merchant ID:** M041
-   - **Country:** Romania
-   - **Monthly Volume:** $51,000
-   - **Dispute Rate:** 0.00203
-   - **Probability of High Risk:** 0.52
-
-5. **Merchant ID:** M007
-   - **Country:** United States
-   - **Monthly Volume:** $156,000
-   - **Dispute Rate:** 0.00049
-   - **Probability of High Risk:** 0.10
+| Merchant ID | Country        | Monthly Volume | Probability High Risk | Internal Risk Flag |
+|-------------|----------------|----------------|-----------------------|---------------------|
+| M005        | United States  | $45,000        | 0.521                 | High                |
+| M041        | Romania        | $51,000        | 0.337                 | High                |
+| M032        | United Kingdom  | $49,000        | 0.335                 | High                |
+| M020        | Portugal       | $22,000        | 0.322                 | High                |
+| M014        | United Kingdom  | $41,000        | 0.266                 | High                |
+| M008        | United Kingdom  | $67,000        | 0.156                 | High                |
+| M004        | United Kingdom  | $78,000        | 0.145                 | Medium              |
+| M044        | United Kingdom  | $76,000        | 0.139                 | High                |
+| M002        | United States  | $89,000        | 0.117                 | High                |
+| M026        | Sweden         | $115,000       | 0.112                 | High                |
 
 ## Key Risk Drivers
-- **High Dispute Rate Merchants:** 4
-- **Internal Risk Breakdown:** 
-  - Medium: 17
-  - High: 17
-  - Low: 16
+The primary risk drivers identified include:
+- High dispute rate merchants: 4
+- Internal risk breakdown: 17 high, 17 medium, 16 low
+- Feature importance ranking highlights:
+  - Internal risk flag: 1.120
+  - Volume growth proxy: 0.904
+  - Binary high internal flag: 0.872
 
 ## External Context (ClarityPay)
-ClarityPay offers flexible payment plans with clear terms, enabling consumers to make significant purchases with peace of mind. Their partnerships with reputable brands enhance their market presence and reliability.
+ClarityPay reports a merchant count of 18, with various value propositions including flexible payment plans and instant pre-approval without credit impact. Partnerships include notable brands like Google and Club Wyndham.
 
 ## Document Insights (PDF)
-The sample PDF provided contains fragmented insights and lacks coherent data, limiting its usefulness for analysis.
+The PDF insights indicate a comprehensive analysis of the portfolio, emphasizing the need for continuous monitoring and potential adjustments based on evolving market conditions.
+
+## Model Comparison
+The logistic regression model achieved a ROC AUC of 0.711, with precision, recall, and F1 scores all at 0.2. In contrast, the random forest model showed no predictive capability. The logistic regression model was chosen for its superior performance metrics.
 
 ## Recommendations & Controls
-- Review and adjust thresholds for high-risk merchant identification.
-- Implement ongoing monitoring of dispute rates and transaction volumes.
-- Conduct regular audits of high-risk merchants to assess risk levels.
-- Enhance communication with merchants identified as high-risk to mitigate potential losses.
-- Consider hyperparameter tuning for the risk model to improve predictive accuracy.
+- Implement manual review for merchants with a probability of high risk greater than 0.5.
+- Conduct manual review for merchants flagged as high risk internally.
+- Regularly monitor dispute rates and adjust thresholds accordingly.
+- Enhance data enrichment processes to improve risk assessment accuracy.
 
-## Caveats
-- Sample data only; not representative of production.
-- Model is baseline (Random Forest); no hyperparameter tuning applied.
-- External context (ClarityPay) is scraped; site structure may change.
-- The model may have limitations due to its reliance on historical data, which may not predict future trends accurately.
+## Caveats & Assumptions
+- Sample data is not representative of production.
+- High dispute risk is defined as a dispute rate greater than 0.002.
+- The expected loss proxy assumes a 2% loss rate on at-risk volume.
+- The model may have limitations in predictive accuracy due to sample size and data quality.
+
+**Recommendation: Approve with Conditions**
+- Manual review for merchants with prob_high_risk > 0.5.
+- Manual review for merchants with internal_risk_flag == high.

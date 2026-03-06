@@ -1,6 +1,7 @@
 """
 Scrape claritypay.com: value propositions, partner names, public statistics.
-Best practices: User-Agent, timeouts, rate limiting. Store parsed results in artifacts.
+Save raw output to raw_scrape.json; produce clean_scrape.json with only meaningful stats
+(merchant_count, credit_issued, growth_rate, nps_score). Report uses clean_scrape.
 """
 import logging
 import re
@@ -12,7 +13,8 @@ import requests
 from bs4 import BeautifulSoup
 
 from src.config import (
-    CLARITYPAY_ARTIFACT,
+    CLARITYPAY_CLEAN_ARTIFACT,
+    CLARITYPAY_RAW_ARTIFACT,
     CLARITYPAY_URL,
     SCRAPE_RATE_LIMIT_DELAY_SEC,
     SCRAPE_TIMEOUT_SEC,
@@ -30,7 +32,7 @@ def scrape_claritypay(
     rate_limit_delay_sec: float = SCRAPE_RATE_LIMIT_DELAY_SEC,
 ) -> dict[str, Any]:
     """
-    Fetch claritypay.com and parse value propositions, partners, and public stats.
+    Fetch claritypay.com and parse value propositions, partners, and public stats (raw).
     Returns structured dict. Respectful: one request, User-Agent, timeout.
     """
     headers = {"User-Agent": user_agent}
@@ -48,7 +50,6 @@ def scrape_claritypay(
     partners: list[str] = []
     public_stats: dict[str, str] = {}
 
-    # Heuristics: look for headings and list items that sound like value props
     for tag in soup.find_all(["h1", "h2", "h3", "p", "li"]):
         text = (tag.get_text() or "").strip()
         if not text or len(text) > 200:
@@ -70,7 +71,6 @@ def scrape_claritypay(
             if text not in value_propositions:
                 value_propositions.append(text)
 
-    # Partners: common patterns like "Proud Partner", logos alt text, etc.
     for tag in soup.find_all(["img", "span", "div"]):
         alt = tag.get("alt") or ""
         text = (tag.get_text() or alt).strip()
@@ -80,7 +80,6 @@ def scrape_claritypay(
             elif text and len(text) < 50 and text not in partners:
                 partners.append(text)
 
-    # Public stats: numbers like "1900+", "$1.2B+", "305K"
     num_pattern = re.compile(r"[\$]?[\d,]+\.?\d*[KMB+]?")
     for tag in soup.find_all(string=True):
         s = (tag if isinstance(tag, str) else tag.get_text() or "").strip()
@@ -101,9 +100,81 @@ def scrape_claritypay(
     return out
 
 
-def scrape_and_save(output_path: Path = CLARITYPAY_ARTIFACT) -> dict[str, Any]:
-    """Scrape ClarityPay and save to artifacts. Returns parsed dict."""
-    data = scrape_claritypay()
-    ensure_dir(output_path)
-    save_json(data, output_path)
-    return data
+def _clean_scrape_to_meaningful_stats(raw: dict[str, Any]) -> dict[str, Any]:
+    """
+    Extract only meaningful stats: merchant_count, credit_issued, growth_rate, nps_score.
+    Ignore script metadata, timestamps, unrelated numbers. Use heuristics on raw text.
+    """
+    clean: dict[str, Any] = {
+        "merchant_count": None,
+        "credit_issued": None,
+        "growth_rate": None,
+        "nps_score": None,
+        "value_propositions": raw.get("value_propositions", [])[:10],
+        "partners": raw.get("partners", [])[:10],
+    }
+    stats = raw.get("public_stats", {})
+    text_sources = list(stats.values()) + raw.get("value_propositions", [])
+
+    # merchant_count: look for "merchant" + number (e.g. "1900+ Merchants")
+    for s in text_sources:
+        if "merchant" in s.lower() and re.search(r"[\d,]+\.?\d*[KMB+]?", s):
+            m = re.search(r"([\d,]+\.?\d*[KMB+]?)", s)
+            if m:
+                clean["merchant_count"] = m.group(1).strip()
+                break
+
+    # credit_issued: $ amount (e.g. "$1.2B+ Credit Issued")
+    for s in text_sources:
+        if ("credit" in s.lower() or "issued" in s.lower()) and "$" in s:
+            m = re.search(r"\$[\d,]+\.?\d*[KMB+]?", s)
+            if m:
+                clean["credit_issued"] = m.group(0)
+                break
+
+    # growth_rate: % growth
+    for s in text_sources:
+        if "growth" in s.lower() and re.search(r"\d+%?", s):
+            m = re.search(r"(\d+%?)", s)
+            if m:
+                clean["growth_rate"] = m.group(1)
+                break
+
+    # nps_score: NPS or net promoter
+    for s in text_sources:
+        if "nps" in s.lower() or "net promoter" in s.lower():
+            m = re.search(r"\d+", s)
+            if m:
+                clean["nps_score"] = m.group(0)
+                break
+
+    # Fallback: take first dollar amount for credit, first large number for merchants
+    if clean["credit_issued"] is None:
+        for k, v in stats.items():
+            if k.startswith("$") and len(k) <= 15:
+                clean["credit_issued"] = k
+                break
+    if clean["merchant_count"] is None:
+        for k, v in stats.items():
+            if re.match(r"^[\d,]+\.?\d*[KMB+]?$", k) and not k.startswith("$"):
+                clean["merchant_count"] = k
+                break
+
+    return clean
+
+
+def scrape_and_save(
+    raw_path: Path = CLARITYPAY_RAW_ARTIFACT,
+    clean_path: Path = CLARITYPAY_CLEAN_ARTIFACT,
+) -> dict[str, Any]:
+    """Scrape ClarityPay; save raw and clean outputs. Returns clean dict (used in report)."""
+    raw = scrape_claritypay()
+    ensure_dir(raw_path)
+    save_json(raw, raw_path)
+    clean = _clean_scrape_to_meaningful_stats(raw)
+    ensure_dir(clean_path)
+    save_json(clean, clean_path)
+    # Keep backward compatibility: also write to legacy path for any code that expects it
+    from src.config import CLARITYPAY_ARTIFACT
+    save_json(clean, CLARITYPAY_ARTIFACT)
+    return clean

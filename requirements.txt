@@ -26,3 +26,7 @@ pytest>=7.4.0
 
 # Optional: OpenAI for LLM report (fallback to mock if not set)
 openai>=1.0.0
+
+# Plots
+matplotlib>=3.7.0
+seaborn>=0.12.0

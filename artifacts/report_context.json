@@ -1,15 +1,30 @@
 {
   "portfolio_summary": {
-    "expected_high_risk_merchants": 3.46,
-    "average_predicted_risk": 0.0692,
-    "expected_loss_proxy": 4447.6,
+    "expected_high_risk_merchants": 3.543175144458932,
+    "average_predicted_risk": 0.07086350288917864,
+    "expected_loss_proxy": 3946.8868690492545,
     "assumed_loss_rate": 0.02,
     "n_merchants": 50
   },
   "model_metrics": {
-    "roc_auc": 1.0,
-    "precision": 1.0,
-    "recall": 1.0
+    "roc_auc": 0.711111111111111,
+    "precision": 0.2,
+    "recall": 0.2,
+    "f1_score": 0.2
+  },
+  "model_comparison": {
+    "logistic_regression": {
+      "roc_auc": 0.711111111111111,
+      "precision": 0.2,
+      "recall": 0.2,
+      "f1_score": 0.2
+    },
+    "random_forest": {
+      "roc_auc": 0.711111111111111,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1_score": 0.0
+    }
   },
   "top_risk_merchants": [
     {
@@ -17,70 +32,80 @@
       "country": "United States",
       "monthly_volume": 45000.0,
       "dispute_rate": 0.0025,
-      "prob_high_risk": 0.88
-    },
-    {
-      "merchant_id": "M002",
-      "country": "United States",
-      "monthly_volume": 89000.0,
-      "dispute_rate": 0.002380952380952381,
-      "prob_high_risk": 0.84
-    },
-    {
-      "merchant_id": "M017",
-      "country": "United Kingdom",
-      "monthly_volume": 55000.0,
-      "dispute_rate": 0.0021164021164021165,
-      "prob_high_risk": 0.72
+      "prob_high_risk": 0.520935532373147,
+      "internal_risk_flag": "high"
     },
     {
       "merchant_id": "M041",
       "country": "Romania",
       "monthly_volume": 51000.0,
       "dispute_rate": 0.002027027027027027,
-      "prob_high_risk": 0.52
-    },
-    {
-      "merchant_id": "M007",
-      "country": "United States",
-      "monthly_volume": 156000.0,
-      "dispute_rate": 0.0004878048780487805,
-      "prob_high_risk": 0.1
-    },
-    {
-      "merchant_id": "M015",
-      "country": "United Kingdom",
-      "monthly_volume": 92000.0,
-      "dispute_rate": 0.0009523809523809524,
-      "prob_high_risk": 0.08
+      "prob_high_risk": 0.33677803827323954,
+      "internal_risk_flag": "high"
     },
     {
       "merchant_id": "M032",
       "country": "United Kingdom",
       "monthly_volume": 49000.0,
       "dispute_rate": 0.0,
-      "prob_high_risk": 0.08
+      "prob_high_risk": 0.33529538093023276,
+      "internal_risk_flag": "high"
     },
     {
-      "merchant_id": "M010",
-      "country": "United Kingdom",
-      "monthly_volume": 52000.0,
-      "dispute_rate": 0.0012121212121212121,
-      "prob_high_risk": 0.06
+      "merchant_id": "M020",
+      "country": "Portugal",
+      "monthly_volume": 22000.0,
+      "dispute_rate": 0.0,
+      "prob_high_risk": 0.3222520683840032,
+      "internal_risk_flag": "high"
     },
     {
-      "merchant_id": "M027",
+      "merchant_id": "M014",
       "country": "United Kingdom",
-      "monthly_volume": 73000.0,
-      "dispute_rate": 0.0012244897959183673,
-      "prob_high_risk": 0.06
+      "monthly_volume": 41000.0,
+      "dispute_rate": 0.0,
+      "prob_high_risk": 0.26628540330986455,
+      "internal_risk_flag": "high"
+    },
+    {
+      "merchant_id": "M008",
+      "country": "United Kingdom",
+      "monthly_volume": 67000.0,
+      "dispute_rate": 0.0004761904761904762,
+      "prob_high_risk": 0.15567709252917908,
+      "internal_risk_flag": "high"
     },
     {
       "merchant_id": "M004",
       "country": "United Kingdom",
       "monthly_volume": 78000.0,
       "dispute_rate": 0.0,
-      "prob_high_risk": 0.04
+      "prob_high_risk": 0.1452895989850873,
+      "internal_risk_flag": "medium"
+    },
+    {
+      "merchant_id": "M044",
+      "country": "United Kingdom",
+      "monthly_volume": 76000.0,
+      "dispute_rate": 0.00042735042735042735,
+      "prob_high_risk": 0.1386049111459169,
+      "internal_risk_flag": "high"
+    },
+    {
+      "merchant_id": "M002",
+      "country": "United States",
+      "monthly_volume": 89000.0,
+      "dispute_rate": 0.002380952380952381,
+      "prob_high_risk": 0.11655034597413923,
+      "internal_risk_flag": "high"
+    },
+    {
+      "merchant_id": "M026",
+      "country": "Sweden",
+      "monthly_volume": 115000.0,
+      "dispute_rate": 0.0003125,
+      "prob_high_risk": 0.11212847523482683,
+      "internal_risk_flag": "high"
     }
   ],
   "risk_drivers": {
@@ -92,7 +117,61 @@
       "low": 16
     }
   },
+  "feature_importance_ranking": [
+    [
+      "internal_risk_flag_encoded",
+      1.119637220042571
+    ],
+    [
+      "volume_growth_proxy",
+      0.9044919480147746
+    ],
+    [
+      "binary_high_internal_flag",
+      0.8717722812732037
+    ],
+    [
+      "region_encoded",
+      0.6586431889383262
+    ],
+    [
+      "log_transaction_count",
+      0.06375558004341698
+    ],
+    [
+      "volume_per_transaction",
+      0.010287879048796947
+    ],
+    [
+      "avg_ticket",
+      0.010287879048796935
+    ],
+    [
+      "transaction_count",
+      0.00397586176655649
+    ],
+    [
+      "log_monthly_volume",
+      0.0014202512208258528
+    ],
+    [
+      "monthly_volume",
+      5.6033362095833105e-05
+    ]
+  ],
+  "portfolio_risk_histogram": {
+    "min": 4.682300411391176e-07,
+    "max": 0.520935532373147,
+    "mean": 0.07086350288917864,
+    "median": 0.03164722557950874,
+    "p75": 0.07624315832921537,
+    "p90": 0.1667379236072478
+  },
   "scraped_claritypay_insights": {
+    "merchant_count": "18",
+    "credit_issued": null,
+    "growth_rate": null,
+    "nps_score": null,
     "value_propositions": [
       "Flexible payment plansfor the momentsthat matter",
       "Pay-over-time plans with clear terms and service excellence \u2014 making important purchases possible with peace of mind.",
@@ -110,29 +189,23 @@
       "Safe Streets logo",
       "Removery logo",
       "Margaritaville Vacation Club logo"
-    ],
-    "public_stats": {
-      "18": "Last Published: Wed Feb 18 2026 14:03:27 GMT+0000 (Coordinated Universal Time)",
-      "2026": "Last Published: Wed Feb 18 2026 14:03:27 GMT+0000 (Coordinated Universal Time)",
-      "14": "Last Published: Wed Feb 18 2026 14:03:27 GMT+0000 (Coordinated Universal Time)",
-      "03": "Last Published: Wed Feb 18 2026 14:03:27 GMT+0000 (Coordinated Universal Time)",
-      "27": "Last Published: Wed Feb 18 2026 14:03:27 GMT+0000 (Coordinated Universal Time)",
-      "0000": "Last Published: Wed Feb 18 2026 14:03:27 GMT+0000 (Coordinated Universal Time)",
-      ",": "(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':\nnew Date().getTime(),event:'gtm.js'});var",
-      "0": "(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':\nnew Date().getTime(),event:'gtm.js'});var",
-      "9": "(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':\nnew Date().getTime(),event:'gtm.js'});var",
-      "5": "(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':\nnew Date().getTime(),event:'gtm.js'});var"
-    }
+    ]
   },
-  "pdf_insights": "MTPSMMSSCSInhreeteheeotaoeicccarsrnncrcctttr tiiineddghhohooasaoeaanlnnyslrcbnn d 123fuvatttl a :h omBcU ---gSi lksNuMKRne:a mldnPePimeimsaetyDLerk ebcp ri stFwdithbtlele eei iaaartruar ayim nMnmtms:smin tdysaem s.g o:n m rn (La ev5ccaSoapephhr0btcuslrparekbehvotm-lns r yia1nrmeetm.en 5o wvLDvet0uai tairrdieksrcsety l.wehpyG s Cd(a u pSa2B)ntoone0aPtun ds2m.tns e5hetipbrr-axm0ylleetn:1r )s daU-f 1olacne0rtnid t.tfde erNp adxseou tuK r dfm sois naarcmg nnhtdahcdetore miysom ceenfo.or s vrlRr lu iahcueltieestegss edid.s. iitCvsnraipo ettumhwioteep no saM:r .n 0 LrSye9E ep4a to4tctalr6tektiv2.mee3-e.9hn.otm: Te+.2.",
+  "pdf_insights": "MTPSMMSSCSInhreeteheeotaoeicccarsrnncrcctttr tiiineddghhohooasaoeaanlnnyslrcbnn d 123fuvatttl a :h omBcU ---gSi lksNuMKRne:a mldnPePimeimsaetyDLerk ebcp ri stFwdithbtlele eei iaaartruar ayim nMnmtms:smin tdysaem s.g o:n m rn (La ev5ccaSoapephhr0btcuslrparekbehvotm-lns r yia1nrmeetm.en 5o wvLDvet0uai tairrdieksrcsety l.wehpyG s Cd(a u pSa2B)ntoone0aPtun ds2m.tns e5hetipbrr-axm0ylleetn:1r )s daU-f 1olacne0rtnid t.tfde erNp adxseou tuK r dfm sois naarcmg nnhtdahcdetore miysom ceenfo.or s vrlRr lu i",
+  "underwriting_recommendation": "Approve with Conditions",
+  "underwriting_conditions": [
+    "Manual review for merchants with prob_high_risk > 0.5.",
+    "Manual review for merchants with internal_risk_flag == high."
+  ],
   "assumptions": [
     "High dispute risk defined as dispute_rate > 0.002.",
     "Expected loss proxy uses 2% assumed loss rate on at-risk volume.",
-    "REST Countries used for region/subregion enrichment; cache in memory."
+    "Out-of-fold predictions used for portfolio metrics.",
+    "REST Countries used for region enrichment; cache in memory."
   ],
   "caveats": [
     "Sample data only; not representative of production.",
-    "Model is baseline (Random Forest); no hyperparameter tuning.",
+    "Model comparison uses LogisticRegression vs RandomForest; chosen by ROC AUC.",
     "External context (ClarityPay) is scraped; site structure may change."
   ]
 }

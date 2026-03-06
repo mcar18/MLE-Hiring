@@ -1,8 +1,7 @@
 """
-Build structured report context for the LLM: portfolio summary, model metrics, top risk merchants,
-risk drivers, scraped claritypay insights, PDF insights, assumptions, caveats.
+Build structured report context for the LLM: portfolio summary, model comparison, top risk merchants,
+feature importance, risk histogram summary, ClarityPay (clean), PDF summary, underwriting recommendation.
 """
-import json
 import logging
 from pathlib import Path
 
@@ -10,9 +9,10 @@ import pandas as pd
 
 from src.config import (
     ARTIFACTS_DIR,
-    CLARITYPAY_ARTIFACT,
+    CLARITYPAY_CLEAN_ARTIFACT,
     FEATURED_PARQUET,
-    PDF_TEXT_JSON,
+    MODEL_COMPARISON_JSON,
+    PDF_SUMMARY_JSON,
     PORTFOLIO_SUMMARY_JSON,
 )
 from src.utils.io_utils import load_json
@@ -20,17 +20,51 @@ from src.utils.io_utils import load_json
 logger = logging.getLogger(__name__)
 
 
+def _compute_underwriting_recommendation(
+    portfolio: dict,
+    top_risk: list[dict],
+    prob_col: str = "prob_high_risk",
+) -> tuple[str, list[str]]:
+    """
+    Propose Approve / Approve with Conditions / Decline and conditions.
+    Conditions: e.g. manual review if prob_high_risk > threshold or internal_risk_flag == high.
+    """
+    conditions: list[str] = []
+    avg_risk = portfolio.get("average_predicted_risk") or 0
+    expected_high = portfolio.get("expected_high_risk_merchants") or 0
+    n = portfolio.get("n_merchants") or 1
+
+    # High-risk count and share
+    high_risk_share = expected_high / n if n else 0
+    max_prob = max((m.get(prob_col) or 0) for m in top_risk) if top_risk else 0
+
+    if avg_risk > 0.25 or high_risk_share > 0.2 or (top_risk and max_prob > 0.7):
+        recommendation = "Decline"
+        conditions.append("Portfolio-level risk exceeds acceptable threshold.")
+    elif avg_risk > 0.1 or high_risk_share > 0.05 or (top_risk and max_prob > 0.5):
+        recommendation = "Approve with Conditions"
+        conditions.append("Manual review for merchants with prob_high_risk > 0.5.")
+        conditions.append("Manual review for merchants with internal_risk_flag == high.")
+    else:
+        recommendation = "Approve"
+        conditions.append("Standard monitoring; no conditions.")
+
+    return recommendation, conditions
+
+
 def build_report_context(
     collated_path: Path | None = None,
     portfolio_path: Path = PORTFOLIO_SUMMARY_JSON,
     model_metrics: dict | None = None,
-    pdf_text_path: Path = PDF_TEXT_JSON,
-    claritypay_path: Path = CLARITYPAY_ARTIFACT,
+    model_comparison_path: Path = MODEL_COMPARISON_JSON,
+    pdf_summary_path: Path = PDF_SUMMARY_JSON,
+    claritypay_path: Path = CLARITYPAY_CLEAN_ARTIFACT,
     featured_path: Path | None = None,
+    feature_importance: list[tuple[str, float]] | None = None,
 ) -> dict:
     """
-    Assemble a single dict with all inputs the LLM needs. Load from artifact paths if not provided.
-    If featured_path exists and has prob_high_risk, use it for top_risk; else use collated.
+    Assemble a single dict with all inputs the LLM needs. Uses clean_scrape and pdf_summary.
+    Includes model_comparison, top 10 by risk, feature_importance_ranking, portfolio_risk_histogram summary.
     """
     featured_path = featured_path or FEATURED_PARQUET
     collated_path = collated_path or ARTIFACTS_DIR / "collated.parquet"
@@ -41,21 +75,21 @@ def build_report_context(
     else:
         df = pd.DataFrame()
 
-    # Portfolio
     try:
         portfolio = load_json(portfolio_path)
     except FileNotFoundError:
         portfolio = {}
 
-    # Top risk merchants (by prob_high_risk if present, else by dispute_rate)
+    # Top 10 merchants by predicted risk (OOF)
     if "prob_high_risk" in df.columns:
-        top_risk = (
-            df.nlargest(10, "prob_high_risk")[["merchant_id", "country", "monthly_volume", "dispute_rate", "prob_high_risk"]]
-            .fillna(0)
-            .astype(object)
-        )
-        # Convert to native types for JSON
-        top_risk = [{k: (float(v) if isinstance(v, (int, float)) else v) for k, v in row.items()} for row in top_risk.to_dict("records")]
+        cols = ["merchant_id", "country", "monthly_volume", "dispute_rate", "prob_high_risk"]
+        if "internal_risk_flag" in df.columns:
+            cols.append("internal_risk_flag")
+        top_risk_df = df.nlargest(10, "prob_high_risk")[[c for c in cols if c in df.columns]].fillna(0)
+        top_risk = [
+            {k: (float(v) if isinstance(v, (int, float)) else v) for k, v in row.items()}
+            for row in top_risk_df.to_dict("records")
+        ]
     else:
         top_risk = (
             df.nlargest(10, "dispute_rate")[["merchant_id", "country", "monthly_volume", "dispute_rate"]]
@@ -64,46 +98,75 @@ def build_report_context(
         )
         top_risk = [{k: (float(v) if isinstance(v, (int, float)) else v) for k, v in row.items()} for row in top_risk.to_dict("records")]
 
-    # Risk drivers: high dispute_rate, high volume, internal_risk_flag
+    # Portfolio risk histogram summary (for report text)
+    if "prob_high_risk" in df.columns:
+        p = df["prob_high_risk"].fillna(0)
+        portfolio_risk_histogram = {
+            "min": float(p.min()),
+            "max": float(p.max()),
+            "mean": float(p.mean()),
+            "median": float(p.median()),
+            "p75": float(p.quantile(0.75)),
+            "p90": float(p.quantile(0.90)),
+        }
+    else:
+        portfolio_risk_histogram = {}
+
     risk_drivers = {
         "high_dispute_rate_merchants": int((df.get("dispute_rate", pd.Series(0)) > 0.002).sum()) if "dispute_rate" in df.columns else 0,
         "total_merchants": len(df),
         "internal_risk_breakdown": {str(k): int(v) for k, v in (df.get("internal_risk_flag", pd.Series()).value_counts().to_dict().items())} if "internal_risk_flag" in df.columns else {},
     }
 
-    # PDF insights
     try:
-        pdf_data = load_json(pdf_text_path)
-        pdf_insights = pdf_data.get("text", "")[:2000]
+        pdf_data = load_json(pdf_summary_path)
+        pdf_insights = pdf_data.get("pdf_summary", "(PDF summary not available)")
     except FileNotFoundError:
         pdf_insights = "(PDF not processed)"
 
-    # ClarityPay
     try:
         clarity = load_json(claritypay_path)
         claritypay_insights = {
+            "merchant_count": clarity.get("merchant_count"),
+            "credit_issued": clarity.get("credit_issued"),
+            "growth_rate": clarity.get("growth_rate"),
+            "nps_score": clarity.get("nps_score"),
             "value_propositions": clarity.get("value_propositions", []),
             "partners": clarity.get("partners", []),
-            "public_stats": clarity.get("public_stats", {}),
         }
     except FileNotFoundError:
-        claritypay_insights = {"value_propositions": [], "partners": [], "public_stats": {}}
+        claritypay_insights = {"merchant_count": None, "credit_issued": None, "growth_rate": None, "nps_score": None, "value_propositions": [], "partners": []}
+
+    try:
+        model_comparison = load_json(model_comparison_path)
+    except FileNotFoundError:
+        model_comparison = {}
+
+    recommendation, conditions = _compute_underwriting_recommendation(portfolio, top_risk)
+
+    feature_importance_ranking = feature_importance or []
 
     context = {
         "portfolio_summary": portfolio,
         "model_metrics": model_metrics or {},
+        "model_comparison": model_comparison,
         "top_risk_merchants": top_risk,
         "risk_drivers": risk_drivers,
+        "feature_importance_ranking": feature_importance_ranking,
+        "portfolio_risk_histogram": portfolio_risk_histogram,
         "scraped_claritypay_insights": claritypay_insights,
         "pdf_insights": pdf_insights,
+        "underwriting_recommendation": recommendation,
+        "underwriting_conditions": conditions,
         "assumptions": [
             "High dispute risk defined as dispute_rate > 0.002.",
             "Expected loss proxy uses 2% assumed loss rate on at-risk volume.",
-            "REST Countries used for region/subregion enrichment; cache in memory.",
+            "Out-of-fold predictions used for portfolio metrics.",
+            "REST Countries used for region enrichment; cache in memory.",
         ],
         "caveats": [
             "Sample data only; not representative of production.",
-            "Model is baseline (Random Forest); no hyperparameter tuning.",
+            "Model comparison uses LogisticRegression vs RandomForest; chosen by ROC AUC.",
             "External context (ClarityPay) is scraped; site structure may change.",
         ],
     }

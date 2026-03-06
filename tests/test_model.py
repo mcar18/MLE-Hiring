@@ -34,18 +34,25 @@ def test_make_target(sample_feature_df):
 
 
 def test_train_model_returns_metrics_and_model(sample_feature_df):
-    model, metrics = train_model(sample_feature_df)
+    model, metrics, oof_proba, model_comparison, feature_importance = train_model(sample_feature_df)
     assert "roc_auc" in metrics
     assert "precision" in metrics
     assert "recall" in metrics
+    assert "f1_score" in metrics
     assert hasattr(model, "predict")
     assert 0 <= metrics["roc_auc"] <= 1
     assert 0 <= metrics["precision"] <= 1
     assert 0 <= metrics["recall"] <= 1
+    assert len(oof_proba) == len(sample_feature_df)
+    assert "logistic_regression" in model_comparison
+    assert "random_forest" in model_comparison
+    assert len(feature_importance) >= 1
 
 
 def test_train_model_single_class():
-    """When all labels are same, stratify is skipped and training still runs."""
+    """When all labels are same, OOF training still runs."""
+    from src.features.feature_builder import get_feature_columns
+    cols = get_feature_columns()
     df = pd.DataFrame({
         "merchant_id": ["M1", "M2", "M3"],
         "monthly_volume": [1000.0, 2000.0, 3000.0],
@@ -56,8 +63,15 @@ def test_train_model_single_class():
         "internal_risk_flag_encoded": [0, 0, 0],
         "region_encoded": [0, 0, 0],
         "volume_growth_proxy": [1.0, 1.0, 1.0],
+        "log_monthly_volume": [0.0, 0.0, 0.0],
+        "log_transaction_count": [0.0, 0.0, 0.0],
+        "binary_high_internal_flag": [0, 0, 0],
+        "volume_per_transaction": [10.0, 10.0, 10.0],
         "high_risk": [0, 0, 0],
     })
-    model, metrics = train_model(df, target_col="high_risk")
+    for c in cols:
+        if c not in df.columns:
+            df[c] = 0
+    model, metrics, oof_proba, model_comparison, _ = train_model(df, target_col="high_risk")
     assert model is not None
     assert "roc_auc" in metrics
