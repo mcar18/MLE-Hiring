@@ -286,6 +286,329 @@
       "Platform / Partner",
       "- A company enabling or partnering with merchants"
     ],
+    "trust_badges": [
+      "ClarityPay logo",
+      "Google logo",
+      "Mockup of ClarityPay app",
+      "Mockup of clarity pay app on iPhone",
+      "5 blue stars",
+      "Stethoscope",
+      "Club Wyndham logo",
+      "LaseyAway Logo",
+      "Shopping bag",
+      "Safe Streets logo",
+      "Accredited",
+      "Removery logo",
+      "Airplane",
+      "American Fintech Council",
+      "Margaritaville Vacation Club logo",
+      "Instant approval mockup",
+      "Clear APR rate mockup",
+      "AutoPay",
+      "Spending Limit mockup",
+      "Live Call/Email Support mockup",
+      "Get Instant Pre-Approval",
+      "Your Spending Limit",
+      "APR rate visual",
+      "Laptop",
+      "Phone",
+      "Chat bubbles",
+      "Man holding iPhone with ClarityPay app open",
+      "Mockup of ClarityPay slogan \"Powering Real Loans from Real Banks\"",
+      "5 Star Customer Rating",
+      "ClarityPay logo mark",
+      "Headshot of ClarityPay founder, Houman Motaharian",
+      "ttv capital",
+      "Outpost ventures",
+      "TAU Capital",
+      "Vesey Ventures",
+      "Neuberger berman",
+      "drbank",
+      "Chris Amenechi",
+      "Lindsay Fitzgerald",
+      "Gardiner Gerrard",
+      "Lynne Laube",
+      "Zhengyuan Lu",
+      "Sean Menke",
+      "David Rabkin",
+      "Tim Ranney",
+      "Peter Sterling",
+      "ClarityPay team smiling on rooftop of high-rise building in New York city",
+      "Solve What Matters. Build With Purpose. Win With Trust.",
+      "Checkmark",
+      "Select Products to Offer",
+      "Set Credit Approval",
+      "Requested and Approved",
+      "Pre-qualified up to 35,000 at Your Brand",
+      "Your Brand Pay Over Time",
+      "Payment Plan Confirmed",
+      "Requested and Approved mockup",
+      "Stars",
+      "Illustration style professional man smiling",
+      "Pay in four installments mockup",
+      "0% APR mockup",
+      "Mockup of payments across months",
+      "6 MO no interest mockup",
+      "t-shirt",
+      "Shopping Trolley",
+      "Hammer",
+      "Chevron down white"
+    ],
+    "job_listings": [
+      {
+        "title": "Careers",
+        "url": "https://www.claritypay.com/careers"
+      }
+    ],
+    "team": [
+      {
+        "name": "Tom Carter",
+        "title": "Chief of Staff",
+        "linkedin_url": "https://www.linkedin.com/in/tomcarterlinked"
+      },
+      {
+        "name": "Callie Estreicher",
+        "title": "Product",
+        "linkedin_url": "https://www.linkedin.com/in/callie-estreicher-0a191668/?lipi=urn%3Ali%3Apage%3Ad_flagship3_profile_verification_details%3BaGrK4INER4qB5PpN7Yn6%2Bg%3D%3D"
+      },
+      {
+        "name": "Saurabh Gangwal",
+        "title": "CEO",
+        "linkedin_url": "https://www.linkedin.com/in/saurabh-gangwal-43976a5/"
+      },
+      {
+        "name": "Houman Motaharian",
+        "title": "Operations",
+        "linkedin_url": "https://www.linkedin.com/in/houman-motaharian-14b3153a"
+      },
+      {
+        "name": "MJ Panda",
+        "title": "Finance",
+        "linkedin_url": "https://www.linkedin.com/in/mj-panda/"
+      },
+      {
+        "name": "Jill Rockwood",
+        "title": "Compliance",
+        "linkedin_url": "https://www.linkedin.com/in/jillprockwood"
+      },
+      {
+        "name": "Kent Schoen",
+        "title": "Credit & Risk",
+        "linkedin_url": "https://www.linkedin.com/in/kent-schoen/"
+      },
+      {
+        "name": "Vikas Shetkar",
+        "title": "Marketing",
+        "linkedin_url": "https://www.linkedin.com/in/shetkarvikas"
+      },
+      {
+        "name": "Jorie Walsdorf",
+        "title": "Marketing",
+        "linkedin_url": "https://www.linkedin.com/in/joriegripman"
+      },
+      {
+        "name": "Chris Amenechi",
+        "title": "",
+        "linkedin_url": ""
+      },
+      {
+        "name": "Lindsay Fitzgerald",
+        "title": "",
+        "linkedin_url": ""
+      },
+      {
+        "name": "Gardiner Gerrard",
+        "title": "",
+        "linkedin_url": ""
+      },
+      {
+        "name": "Lynne Laube",
+        "title": "",
+        "linkedin_url": ""
+      },
+      {
+        "name": "Zhengyuan Lu",
+        "title": "",
+        "linkedin_url": ""
+      },
+      {
+        "name": "Sean Menke",
+        "title": "",
+        "linkedin_url": ""
+      },
+      {
+        "name": "David Rabkin",
+        "title": "",
+        "linkedin_url": ""
+      },
+      {
+        "name": "Tim Ranney",
+        "title": "",
+        "linkedin_url": ""
+      },
+      {
+        "name": "Peter Sterling",
+        "title": "",
+        "linkedin_url": ""
+      }
+    ],
+    "investors_advisors": [
+      {
+        "name": "Chris Amenechi",
+        "title": "Co-Founder & ChairmanSeatCash",
+        "linkedin_url": "https://www.linkedin.com/in/camenechilive2021/"
+      },
+      {
+        "name": "Lindsay Fitzgerald",
+        "title": "General Partner & Co-FounderVesey Ventures",
+        "linkedin_url": "https://www.linkedin.com/in/lindsayfitzgerald/"
+      },
+      {
+        "name": "Gardiner Gerrard",
+        "title": "Co-Founder & Managing PartnerTTV Capital",
+        "linkedin_url": "https://www.linkedin.com/in/gardinergarrard/"
+      },
+      {
+        "name": "Lynne Laube",
+        "title": "Venture PartnerTTV Capital",
+        "linkedin_url": "https://www.linkedin.com/in/lynnelaube/"
+      },
+      {
+        "name": "Zhengyuan Lu",
+        "title": "Managing Director, Specialty FinanceNeuberger Berman",
+        "linkedin_url": "https://www.linkedin.com/in/zhengyuan-lu-6a04058/"
+      },
+      {
+        "name": "Sean Menke",
+        "title": "Board Member & AdvisorWaste Management & JetBlue",
+        "linkedin_url": "https://www.linkedin.com/in/sean-menke/"
+      },
+      {
+        "name": "David Rabkin",
+        "title": "Fintech AdvisorMcKinsey & Company",
+        "linkedin_url": "https://www.linkedin.com/in/david-rabkin/"
+      },
+      {
+        "name": "Tim Ranney",
+        "title": "Founder & PresidentCongruit",
+        "linkedin_url": "https://www.linkedin.com/in/tim-ranney-598647129/"
+      },
+      {
+        "name": "Peter Sterling",
+        "title": "PartnerOutpost Ventures",
+        "linkedin_url": "https://www.linkedin.com/in/peter-sterling-90b8a0/"
+      }
+    ],
+    "people_research": [
+      {
+        "name": "Tom Carter",
+        "title": "Chief of Staff",
+        "search_url": "https://duckduckgo.com/?q=Tom+Carter+Chief+of+Staff+ClarityPay",
+        "results": []
+      },
+      {
+        "name": "Callie Estreicher",
+        "title": "Product",
+        "search_url": "https://duckduckgo.com/?q=Callie+Estreicher+Product+ClarityPay",
+        "results": []
+      },
+      {
+        "name": "Saurabh Gangwal",
+        "title": "CEO",
+        "search_url": "https://duckduckgo.com/?q=Saurabh+Gangwal+CEO+ClarityPay",
+        "results": []
+      },
+      {
+        "name": "Houman Motaharian",
+        "title": "Operations",
+        "search_url": "https://duckduckgo.com/?q=Houman+Motaharian+Operations+ClarityPay",
+        "results": []
+      },
+      {
+        "name": "MJ Panda",
+        "title": "Finance",
+        "search_url": "https://duckduckgo.com/?q=MJ+Panda+Finance+ClarityPay",
+        "results": []
+      },
+      {
+        "name": "Jill Rockwood",
+        "title": "Compliance",
+        "search_url": "https://duckduckgo.com/?q=Jill+Rockwood+Compliance+ClarityPay",
+        "results": []
+      },
+      {
+        "name": "Kent Schoen",
+        "title": "Credit & Risk",
+        "search_url": "https://duckduckgo.com/?q=Kent+Schoen+Credit+&+Risk+ClarityPay",
+        "results": []
+      },
+      {
+        "name": "Vikas Shetkar",
+        "title": "Marketing",
+        "search_url": "https://duckduckgo.com/?q=Vikas+Shetkar+Marketing+ClarityPay",
+        "results": []
+      },
+      {
+        "name": "Jorie Walsdorf",
+        "title": "Marketing",
+        "search_url": "https://duckduckgo.com/?q=Jorie+Walsdorf+Marketing+ClarityPay",
+        "results": []
+      },
+      {
+        "name": "Chris Amenechi",
+        "title": "",
+        "search_url": "https://duckduckgo.com/?q=Chris+Amenechi++ClarityPay",
+        "results": []
+      },
+      {
+        "name": "Lindsay Fitzgerald",
+        "title": "",
+        "search_url": "https://duckduckgo.com/?q=Lindsay+Fitzgerald++ClarityPay",
+        "results": []
+      },
+      {
+        "name": "Gardiner Gerrard",
+        "title": "",
+        "search_url": "https://duckduckgo.com/?q=Gardiner+Gerrard++ClarityPay",
+        "results": []
+      },
+      {
+        "name": "Lynne Laube",
+        "title": "",
+        "search_url": "https://duckduckgo.com/?q=Lynne+Laube++ClarityPay",
+        "results": []
+      },
+      {
+        "name": "Zhengyuan Lu",
+        "title": "",
+        "search_url": "https://duckduckgo.com/?q=Zhengyuan+Lu++ClarityPay",
+        "results": []
+      },
+      {
+        "name": "Sean Menke",
+        "title": "",
+        "search_url": "https://duckduckgo.com/?q=Sean+Menke++ClarityPay",
+        "results": []
+      },
+      {
+        "name": "David Rabkin",
+        "title": "",
+        "search_url": "https://duckduckgo.com/?q=David+Rabkin++ClarityPay",
+        "results": []
+      },
+      {
+        "name": "Tim Ranney",
+        "title": "",
+        "search_url": "https://duckduckgo.com/?q=Tim+Ranney++ClarityPay",
+        "results": []
+      },
+      {
+        "name": "Peter Sterling",
+        "title": "",
+        "search_url": "https://duckduckgo.com/?q=Peter+Sterling++ClarityPay",
+        "results": []
+      }
+    ],
     "pages_scraped": [
       "/",
       "/about-us",

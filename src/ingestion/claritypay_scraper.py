@@ -232,7 +232,7 @@ def _extract_job_listings(soup: BeautifulSoup, base_url: str) -> list[dict[str, 
 
 
 def _extract_team_from_about(soup: BeautifulSoup, base_url: str) -> list[dict[str, str]]:
-    """Extract people from about-us: name (headings) and title/LinkedIn from links between this and next heading."""
+    """Extract people from about-us: name (headings), title from 'NextPersonNameTitle' link suffix, LinkedIn from link whose text starts with person's name."""
     people = []
     headings = soup.find_all(["h3", "h4"])
     all_names = {(h.get_text() or "").strip() for h in headings}
@@ -257,7 +257,7 @@ def _extract_team_from_about(soup: BeautifulSoup, base_url: str) -> list[dict[st
                 break
             link_text = (tag.get_text() or "").strip()
             href = tag.get("href", "")
-            # If link text is "NextPersonNameTitle" (e.g. "Callie EstreicherChief of Staff"), use "Title" only and don't use this link's URL for LinkedIn
+            # Link text often "NextPersonNameTitle" (e.g. "Callie EstreicherChief of Staff"); use suffix as current person's title; href is next person's so don't use
             other_name_prefix = next((other for other in all_names if other != name and (link_text == other or link_text.startswith(other))), None)
             if other_name_prefix:
                 suffix = link_text[len(other_name_prefix):].strip()
@@ -265,13 +265,79 @@ def _extract_team_from_about(soup: BeautifulSoup, base_url: str) -> list[dict[st
                     title = suffix
                 continue
             if "linkedin.com" in href:
-                linkedin_url = urljoin(base_url, href)
-                if link_text and len(link_text) < 80 and not title and "linkedin" not in link_text.lower():
-                    title = link_text
+                if link_text and "linkedin" not in link_text.lower():
+                    linkedin_url = urljoin(base_url, href)
+                    if not title and len(link_text) < 80:
+                        title = link_text
             elif link_text and len(link_text) < 80 and not title and "linkedin" not in link_text.lower():
                 title = link_text
         people.append({"name": name, "title": title or "", "linkedin_url": linkedin_url or ""})
+
+    # Second pass: LinkedIn is often in a link whose text is "PersonNameTitle" (same card or elsewhere). Assign href to that person.
+    for a in soup.find_all("a", href=True):
+        href = a.get("href", "")
+        if "linkedin.com" not in href:
+            continue
+        link_text = (a.get_text() or "").strip()
+        for p in people:
+            if not p.get("linkedin_url") and link_text.startswith(p["name"]):
+                p["linkedin_url"] = urljoin(base_url, href)
+                if not p.get("title") and len(link_text) > len(p["name"]):
+                    suffix = link_text[len(p["name"]):].strip()
+                    if suffix and len(suffix) < 80 and "linkedin" not in suffix.lower():
+                        p["title"] = suffix
+                break
     return people
+
+
+def _extract_investors_advisors(soup: BeautifulSoup, base_url: str) -> list[dict[str, str]]:
+    """Extract Investors & Advisors from about page: links are on images; use img alt for name, parent text for title."""
+    results: list[dict[str, str]] = []
+    seen: set[tuple[str, str]] = set()
+
+    # Find "Investors & Advisors" heading so we only take links in that section
+    section_start = None
+    section_end = None
+    for h in soup.find_all(["h2", "h3", "h4"]):
+        t = (h.get_text() or "").strip()
+        if "investors" in t.lower() and "advisors" in t.lower():
+            section_start = h
+            break
+    if not section_start:
+        return results
+    # End of section: next sibling h2/h3 of same level, or next h2
+    for tag in section_start.find_all_next(["h2", "h3"]):
+        if tag.name == section_start.name and tag != section_start:
+            section_end = tag
+            break
+        if tag.name == "h2":
+            section_end = tag
+            break
+
+    for a in section_start.find_all_next("a", href=True):
+        if section_end and section_end in a.find_all_previous():
+            break
+        if "linkedin.com" not in a.get("href", "").lower():
+            continue
+        img = a.find("img")
+        if not img:
+            continue
+        name = (img.get("alt") or "").strip()
+        if not name or len(name) > 80:
+            parent_text = (a.find_parent(["div", "section", "li"]) or a).get_text() or ""
+            if parent_text:
+                name = parent_text.strip().split("\n")[0].strip()[:80]
+        if not name:
+            continue
+        parent = a.find_parent(["div", "section", "li"]) or a
+        full_text = (parent.get_text() or "").strip().replace("\n", " ")
+        title = full_text[len(name) :].strip()[:120] if full_text.startswith(name) else full_text[:120]
+        linkedin_url = urljoin(base_url, a.get("href", ""))
+        key = (name, linkedin_url)
+        if key not in seen:
+            seen.add(key)
+            results.append({"name": name, "title": title or "", "linkedin_url": linkedin_url})
+    return results
 
 
 def _research_person(name: str, title: str, max_results: int = 3) -> dict[str, Any]:
@@ -355,6 +421,7 @@ def scrape_one_page(
         out["job_listings"] = _extract_job_listings(soup, url)
     if "about" in path_lower:
         out["team"] = _extract_team_from_about(soup, url)
+        out["investors_advisors"] = _extract_investors_advisors(soup, url)
     return out
 
 
@@ -384,6 +451,7 @@ def scrape_claritypay(
     pages: dict[str, dict] = {}
     job_listings: list[dict[str, str]] = []
     team: list[dict[str, str]] = []
+    investors_advisors: list[dict[str, str]] = []
 
     queue: list[str] = ["/"]
     visited: set[str] = set()
@@ -417,6 +485,11 @@ def scrape_claritypay(
             for t in page_data["team"]:
                 if not any(ex.get("name") == t.get("name") for ex in team):
                     team.append(t)
+        if page_data.get("investors_advisors"):
+            for ia in page_data["investors_advisors"]:
+                key = (ia.get("name"), ia.get("linkedin_url"))
+                if not any(ex.get("name") == ia.get("name") and ex.get("linkedin_url") == ia.get("linkedin_url") for ex in investors_advisors):
+                    investors_advisors.append(ia)
 
         for k, v in (page_data.get("banner_stats") or {}).items():
             if v and k not in merged_banner_stats:
@@ -450,6 +523,7 @@ def scrape_claritypay(
         "trust_badges": all_trust_badges,
         "job_listings": job_listings,
         "team": team,
+        "investors_advisors": investors_advisors,
         "people_research": people_research,
     }
     return raw
@@ -471,6 +545,7 @@ def _clean_scrape_to_meaningful_stats(raw: dict[str, Any]) -> dict[str, Any]:
         "trust_badges": raw.get("trust_badges", []),
         "job_listings": raw.get("job_listings", []),
         "team": raw.get("team", []),
+        "investors_advisors": raw.get("investors_advisors", []),
         "people_research": raw.get("people_research", []),
         "pages_scraped": sorted(raw.get("pages", {}).keys()),
     }
