@@ -1,8 +1,7 @@
 """
-Scrape claritypay.com: rotating banner stats, value propositions, partners, and multiple pages.
-Banner stats (1900+ Merchants, $1.2B+ Credit Issued, 25% MoM Growth, +91 NPS) are extracted from
-visible content only; script/metadata/timestamps are excluded. Optionally sift through multiple
-site pages (home, FAQs, contact, etc.) for richer content.
+Scrape claritypay.com: full-site crawl by stepping through every discovered page,
+rotating banner stats, value propositions, partners. Banner stats (including for-business
+stats like 85% True Approvals, 250% conversion lift) are merged from all pages.
 """
 import logging
 import re
@@ -15,12 +14,12 @@ import requests
 from bs4 import BeautifulSoup
 
 from src.config import (
-    CLARITYPAY_BASE_DOMAIN,
     CLARITYPAY_CLEAN_ARTIFACT,
     CLARITYPAY_RAW_ARTIFACT,
     CLARITYPAY_URL,
     SCRAPE_MAX_PAGES,
     SCRAPE_RATE_LIMIT_DELAY_SEC,
+    SCRAPE_RESEARCH_PEOPLE,
     SCRAPE_TIMEOUT_SEC,
     USER_AGENT,
 )
@@ -28,50 +27,46 @@ from src.utils.io_utils import ensure_dir, save_json
 
 logger = logging.getLogger(__name__)
 
-# Patterns that indicate script/metadata/timestamp — exclude from stat extraction
 SCRIPT_NOISE = re.compile(
     r"GMT|Published|function\s*\(|getTime|var\s+\w|\.push\s*\(|event\.|w\[l\]|d\.getTime",
     re.I,
 )
-# Stat + label patterns for the rotating banner (order matters for first-match)
+# Banner + for-business stats (order matters for first-match)
+# growth_rate: require % so we don't capture "8" from "8AM" or similar
 BANNER_STAT_PATTERNS = [
     ("merchant_count", re.compile(r"([\d,]+\.?\d*[KMB]?\+?)\s*merchants?\w*", re.I)),
     ("credit_issued", re.compile(r"(\$[\d,]+\.?\d*[KMB]?\+?)\s*credit\w*\s*issued?", re.I)),
-    ("growth_rate", re.compile(r"(\d+%?)\s*(?:MoM\s*)?(?:customer\s*)?growth\w*", re.I)),
+    ("growth_rate", re.compile(r"(\d+%)\s*(?:MoM\s*)?(?:customer\s*)?growth\w*", re.I)),  # require % to avoid capturing "8" from time
     ("nps_score", re.compile(r"(\+\d+|\d+)\s*(?:net\s*promoter\s*score|nps)", re.I)),
     ("nps_score_alt", re.compile(r"nps[^\d]*(\d+)", re.I)),
+    ("true_approvals_pct", re.compile(r"(\d+%?)\s*true\s*approvals?", re.I)),
+    ("conversion_lift_pct", re.compile(r"(\d+%?)\s*(?:increase\s*in\s*)?conversion\s*(?:rate|lift)?", re.I)),
+    ("avg_sale_lift_pct", re.compile(r"(\d+%?)\s*(?:higher\s*)?(?:average\s*)?sale\s*(?:amount|lift)?", re.I)),
 ]
 
 
 def _strip_script_style(soup: BeautifulSoup) -> None:
-    """Remove script, style, and noscript so their text is not used for stats."""
     for tag in soup.find_all(["script", "style", "noscript"]):
         tag.decompose()
 
 
 def _is_noise_text(text: str) -> bool:
-    """True if text looks like script, timestamp, or other non–banner content."""
     if not text or len(text) > 500:
         return True
     return bool(SCRIPT_NOISE.search(text))
 
 
 def _get_visible_text_blocks(soup: BeautifulSoup) -> list[str]:
-    """Get visible text as blocks (e.g. div/section text), skipping noise."""
     blocks = []
-    for tag in soup.find_all(["div", "section", "span", "p", "h1", "h2", "h3", "li"]):
+    for tag in soup.find_all(["div", "section", "span", "p", "h1", "h2", "h3", "h4", "li"]):
         t = (tag.get_text() or "").strip()
-        if t and not _is_noise_text(t) and len(t) <= 300:
+        if t and not _is_noise_text(t) and len(t) <= 400:
             blocks.append(t)
     return blocks
 
 
 def _extract_banner_stats_from_text(blocks: list[str]) -> dict[str, str]:
-    """
-    Extract banner stats (merchant_count, credit_issued, growth_rate, nps_score) from
-    visible text that matches known rotating-banner phrases. Prefer regex match, then
-    fallback: same block contains both number pattern and keyword.
-    """
+    """Extract all known stats (banner + for-business) from visible text."""
     result: dict[str, str] = {}
     full_text = " ".join(blocks)
 
@@ -90,7 +85,7 @@ def _extract_banner_stats_from_text(blocks: list[str]) -> dict[str, str]:
                     result[key] = val
                 break
 
-    # Fallback: same block has number + keyword (for split DOM / carousel)
+    # Fallbacks for banner stats
     if "merchant_count" not in result:
         for block in blocks:
             if re.search(r"merchants?\w*", block, re.I) and re.search(r"[\d,]+\.?\d*[KMB]?\+?", block):
@@ -107,8 +102,9 @@ def _extract_banner_stats_from_text(blocks: list[str]) -> dict[str, str]:
                     break
     if "growth_rate" not in result:
         for block in blocks:
-            if re.search(r"growth|mom", block, re.I) and re.search(r"\d+%?", block):
-                m = re.search(r"(\d+%?)", block)
+            if re.search(r"growth|mom", block, re.I):
+                # Prefer percentage (e.g. 25%) to avoid capturing "8" from "8AM"
+                m = re.search(r"(\d+%)", block)
                 if m:
                     result["growth_rate"] = m.group(1).strip()
                     break
@@ -119,46 +115,58 @@ def _extract_banner_stats_from_text(blocks: list[str]) -> dict[str, str]:
                 if m:
                     result["nps_score"] = m.group(1).strip()
                     break
+    # For-business fallbacks
+    if "true_approvals_pct" not in result:
+        for block in blocks:
+            if "true approval" in block.lower() and re.search(r"\d+%?", block):
+                m = re.search(r"(\d+%?)", block)
+                if m:
+                    result["true_approvals_pct"] = m.group(1).strip()
+                    break
+    if "conversion_lift_pct" not in result:
+        for block in blocks:
+            if "conversion" in block.lower() and re.search(r"\d+%?", block):
+                m = re.search(r"(\d+%?)", block)
+                if m:
+                    result["conversion_lift_pct"] = m.group(1).strip()
+                    break
+    if "avg_sale_lift_pct" not in result:
+        for block in blocks:
+            if "sale" in block.lower() and "higher" in block.lower() and re.search(r"\d+%?", block):
+                m = re.search(r"(\d+%?)", block)
+                if m:
+                    result["avg_sale_lift_pct"] = m.group(1).strip()
+                    break
 
     return result
 
 
 def _extract_public_stats_from_banner(banner_stats: dict[str, str]) -> dict[str, str]:
-    """Build public_stats dict for raw output from banner_stats (no script noise)."""
-    out = {}
     labels = {
         "merchant_count": "Merchants Served",
         "credit_issued": "Credit Issued",
         "growth_rate": "MoM Customer Growth",
         "nps_score": "Net Promoter Score",
+        "true_approvals_pct": "True Approvals",
+        "conversion_lift_pct": "Conversion Rate Lift",
+        "avg_sale_lift_pct": "Higher Average Sale",
     }
-    for k, v in banner_stats.items():
-        if v and k in labels:
-            out[v] = labels[k]
-    return out
+    return {v: banner_stats[k] for k, v in labels.items() if banner_stats.get(k)}
 
 
 def _extract_value_propositions(soup: BeautifulSoup) -> list[str]:
-    """Value props from headings and list items; exclude noise."""
     propositions = []
-    for tag in soup.find_all(["h1", "h2", "h3", "p", "li"]):
+    for tag in soup.find_all(["h1", "h2", "h3", "h4", "p", "li"]):
         text = (tag.get_text() or "").strip()
-        if not text or _is_noise_text(text) or len(text) > 250:
+        if not text or _is_noise_text(text) or len(text) > 400:
             continue
         lower = text.lower()
         if any(
             x in lower
             for x in (
-                "pay over time",
-                "pay-over-time",
-                "clear terms",
-                "flexible",
-                "credit",
-                "financing",
-                "pre-approval",
-                "autopay",
-                "support",
-                "peace of mind",
+                "pay over time", "pay-over-time", "clear terms", "flexible", "credit",
+                "financing", "pre-approval", "autopay", "support", "peace of mind",
+                "approval", "conversion", "sale", "omnichannel", "brand", "loyalty",
             )
         ):
             if text not in propositions:
@@ -167,7 +175,6 @@ def _extract_value_propositions(soup: BeautifulSoup) -> list[str]:
 
 
 def _extract_partners(soup: BeautifulSoup) -> list[str]:
-    """Partner names from alt text and 'Proud Partner' context."""
     partners = []
     for tag in soup.find_all(["img", "span", "div"]):
         alt = (tag.get("alt") or "").strip()
@@ -176,13 +183,113 @@ def _extract_partners(soup: BeautifulSoup) -> list[str]:
         if "partner" in combined or ("logo" in alt and len(alt) > 2):
             if alt and alt not in partners:
                 partners.append(alt)
-            elif text and len(text) < 60 and text not in partners:
+            elif text and len(text) < 80 and text not in partners:
                 partners.append(text)
     return partners
 
 
+def _extract_trust_badges_and_logos(soup: BeautifulSoup) -> list[str]:
+    """Capture logo/badge text: all img alt text plus any text with BBB, approved, accredited, etc."""
+    badges = []
+    for tag in soup.find_all("img", alt=True):
+        alt = (tag.get("alt") or "").strip()
+        if alt and len(alt) < 120 and alt not in badges:
+            badges.append(alt)
+    trust_keywords = re.compile(r"bbb|approved|accredited|rating|trust|a\+|certified", re.I)
+    for tag in soup.find_all(["span", "div", "p", "a"]):
+        text = (tag.get_text() or "").strip()
+        if text and len(text) < 100 and trust_keywords.search(text) and text not in badges:
+            badges.append(text)
+    return badges
+
+
+def _extract_job_listings(soup: BeautifulSoup, base_url: str) -> list[dict[str, str]]:
+    """Extract job listings from careers page (links and headings that look like job titles)."""
+    jobs = []
+    for a in soup.find_all("a", href=True):
+        href = a["href"].strip()
+        text = (a.get_text() or "").strip()
+        if not text or len(text) > 150:
+            continue
+        full_url = urljoin(base_url, href)
+        if "career" in href.lower() or "job" in href.lower() or "role" in href.lower() or "position" in href.lower():
+            jobs.append({"title": text or "Job", "url": full_url})
+        if re.search(r"engineer|developer|manager|analyst|director|specialist|coordinator|designer", text, re.I):
+            if not any(j.get("title") == text for j in jobs):
+                jobs.append({"title": text, "url": full_url})
+    for tag in soup.find_all(["h2", "h3", "h4"]):
+        text = (tag.get_text() or "").strip()
+        if not text or len(text) > 100:
+            continue
+        if re.search(r"engineer|developer|manager|analyst|director|specialist|coordinator|designer|associate", text, re.I):
+            url = ""
+            parent = tag.find_parent("a")
+            if parent and parent.get("href"):
+                url = urljoin(base_url, parent["href"])
+            if not any(j.get("title") == text for j in jobs):
+                jobs.append({"title": text, "url": url})
+    return jobs
+
+
+def _extract_team_from_about(soup: BeautifulSoup, base_url: str) -> list[dict[str, str]]:
+    """Extract people from about-us: name (headings) and title/LinkedIn from links between this and next heading."""
+    people = []
+    headings = soup.find_all(["h3", "h4"])
+    all_names = {(h.get_text() or "").strip() for h in headings}
+    seen_names = set()
+
+    for i, h in enumerate(headings):
+        name = (h.get_text() or "").strip()
+        if not name or len(name) > 80:
+            continue
+        if name.lower() in ("leadership", "investors & advisors", "meet the leadership", "our values", "follow us on linkedin"):
+            continue
+        if len(name.split()) > 5:
+            continue
+        if name in seen_names:
+            continue
+        seen_names.add(name)
+        title = ""
+        linkedin_url = ""
+        stop = headings[i + 1] if i + 1 < len(headings) else None
+        for tag in h.find_all_next("a", href=True):
+            if stop and tag.find_previous(["h3", "h4"]) == stop:
+                break
+            link_text = (tag.get_text() or "").strip()
+            href = tag.get("href", "")
+            # If link text is "NextPersonNameTitle" (e.g. "Callie EstreicherChief of Staff"), use "Title" only and don't use this link's URL for LinkedIn
+            other_name_prefix = next((other for other in all_names if other != name and (link_text == other or link_text.startswith(other))), None)
+            if other_name_prefix:
+                suffix = link_text[len(other_name_prefix):].strip()
+                if suffix and len(suffix) < 80 and not title and "linkedin" not in suffix.lower():
+                    title = suffix
+                continue
+            if "linkedin.com" in href:
+                linkedin_url = urljoin(base_url, href)
+                if link_text and len(link_text) < 80 and not title and "linkedin" not in link_text.lower():
+                    title = link_text
+            elif link_text and len(link_text) < 80 and not title and "linkedin" not in link_text.lower():
+                title = link_text
+        people.append({"name": name, "title": title or "", "linkedin_url": linkedin_url or ""})
+    return people
+
+
+def _research_person(name: str, title: str, max_results: int = 3) -> dict[str, Any]:
+    """Optional: search for person and return search URL + first few result links (duckduckgo_search)."""
+    query = f"{name} {title} ClarityPay".strip()
+    search_url = f"https://duckduckgo.com/?q={query.replace(' ', '+')}"
+    out = {"name": name, "title": title, "search_url": search_url, "results": []}
+    try:
+        from duckduckgo_search import DDGS
+        with DDGS() as ddgs:
+            for r in ddgs.text(query, max_results=max_results):
+                out["results"].append({"title": r.get("title", ""), "url": r.get("href", ""), "snippet": (r.get("body") or "")[:200]})
+    except Exception as e:
+        logger.debug("DuckDuckGo search skipped for %s: %s", name, e)
+    return out
+
+
 def _get_same_site_links(soup: BeautifulSoup, base_url: str) -> list[str]:
-    """Collect same-site hrefs (path only, normalized) for multi-page scraping."""
     base_domain = urlparse(base_url).netloc.lower()
     paths = set()
     for a in soup.find_all("a", href=True):
@@ -194,17 +301,13 @@ def _get_same_site_links(soup: BeautifulSoup, base_url: str) -> list[str]:
         if parsed.netloc.lower() != base_domain:
             continue
         path = parsed.path.rstrip("/") or "/"
-        if path not in paths:
-            paths.add(path)
+        # Normalize: strip fragment for dedup
+        path = path.split("#")[0].rstrip("/") or "/"
+        paths.add(path)
     return sorted(paths)
 
 
-def _fetch_page(
-    url: str,
-    headers: dict,
-    timeout_sec: int = SCRAPE_TIMEOUT_SEC,
-) -> str | None:
-    """Fetch one page; return HTML or None on failure."""
+def _fetch_page(url: str, headers: dict, timeout_sec: int = SCRAPE_TIMEOUT_SEC) -> str | None:
     try:
         r = requests.get(url, headers=headers, timeout=timeout_sec)
         r.raise_for_status()
@@ -218,16 +321,13 @@ def scrape_one_page(
     url: str,
     timeout_sec: int = SCRAPE_TIMEOUT_SEC,
     user_agent: str = USER_AGENT,
+    path: str = "",
 ) -> dict[str, Any]:
-    """
-    Scrape a single page: strip script/style, extract banner stats from visible text,
-    value propositions, and partners. Returns dict with url, banner_stats, public_stats,
-    value_propositions, partners, and same_site_paths (for multi-page).
-    """
+    """Scrape a single page; return banner_stats, value_propositions, partners, trust_badges, optional job_listings/team."""
     headers = {"User-Agent": user_agent}
     html = _fetch_page(url, headers, timeout_sec)
     if not html:
-        return {"url": url, "error": "Fetch failed", "banner_stats": {}, "public_stats": {}, "value_propositions": [], "partners": []}
+        return {"url": url, "error": "Fetch failed", "banner_stats": {}, "public_stats": {}, "value_propositions": [], "partners": [], "trust_badges": [], "same_site_paths": []}
 
     soup = BeautifulSoup(html, "html.parser")
     _strip_script_style(soup)
@@ -238,16 +338,24 @@ def scrape_one_page(
 
     value_propositions = _extract_value_propositions(soup)
     partners = _extract_partners(soup)
+    trust_badges = _extract_trust_badges_and_logos(soup)
     same_site_paths = _get_same_site_links(soup, url)
 
-    return {
+    out = {
         "url": url,
         "banner_stats": banner_stats,
         "public_stats": public_stats,
         "value_propositions": value_propositions,
         "partners": partners,
+        "trust_badges": trust_badges,
         "same_site_paths": same_site_paths,
     }
+    path_lower = (path or url).lower()
+    if "career" in path_lower:
+        out["job_listings"] = _extract_job_listings(soup, url)
+    if "about" in path_lower:
+        out["team"] = _extract_team_from_about(soup, url)
+    return out
 
 
 def scrape_claritypay(
@@ -258,76 +366,113 @@ def scrape_claritypay(
     max_pages: int = SCRAPE_MAX_PAGES,
 ) -> dict[str, Any]:
     """
-    Scrape homepage first for banner stats, then discover and scrape other same-site pages.
-    Banner stats (1900+ Merchants, $1.2B+ Credit, etc.) are taken from visible content only.
-    Returns raw dict with pages, aggregated value_propositions/partners, and banner_stats.
+    Full-site crawl: start from homepage, discover links from every page, and step through
+    each unique same-site page. Merge banner_stats from every page (so for-business stats
+    like 85% True Approvals are captured). Aggregate all value_propositions and partners.
+    max_pages: 0 = no cap (crawl until no new links); else cap at that number.
     """
-    headers = {"User-Agent": user_agent}
     base_domain = urlparse(base_url).netloc
     base_scheme = urlparse(base_url).scheme or "https"
+    no_cap = max_pages == 0
+    cap = max_pages if not no_cap else 9999
 
-    # 1) Homepage
-    first = scrape_one_page(base_url, timeout_sec, user_agent)
-    time.sleep(rate_limit_delay_sec)
+    all_value_propositions: list[str] = []
+    all_partners: list[str] = []
+    all_trust_badges: list[str] = []
+    merged_banner_stats: dict[str, str] = {}
+    merged_public_stats: dict[str, str] = {}
+    pages: dict[str, dict] = {}
+    job_listings: list[dict[str, str]] = []
+    team: list[dict[str, str]] = []
 
-    all_value_propositions = list(first.get("value_propositions", []))
-    all_partners = list(first.get("partners", []))
-    banner_stats = dict(first.get("banner_stats", {}))
-    public_stats = dict(first.get("public_stats", {}))
-    pages = {"/": first}
+    queue: list[str] = ["/"]
+    visited: set[str] = set()
 
-    # 2) Discover and scrape other pages (same site)
-    to_visit = [
-        p for p in first.get("same_site_paths", [])
-        if p != "/" and not p.startswith("/#")
-    ][: max_pages - 1]
-    seen = {"/"}
-
-    for path in to_visit:
-        if path in seen or len(pages) >= max_pages:
+    while queue and len(visited) < cap:
+        path = queue.pop(0)
+        if path in visited:
             continue
-        seen.add(path)
-        page_url = f"{base_scheme}://{base_domain}{path}"
+        visited.add(path)
+        page_url = f"{base_scheme}://{base_domain}{path}" if path != "/" else base_url
+        logger.info("Scraping page %s (%d queued, %d visited)", path, len(queue), len(visited))
+
         time.sleep(rate_limit_delay_sec)
-        page_data = scrape_one_page(page_url, timeout_sec, user_agent)
-        pages[path] = page_data
+        page_data = scrape_one_page(page_url, timeout_sec, user_agent, path=path)
+        pages[path] = {k: v for k, v in page_data.items() if k != "same_site_paths"}
+
         for v in page_data.get("value_propositions", []):
             if v not in all_value_propositions:
                 all_value_propositions.append(v)
         for p in page_data.get("partners", []):
             if p not in all_partners:
                 all_partners.append(p)
-        # If homepage had no banner stats, try this page (e.g. stats on another landing)
-        if not banner_stats and page_data.get("banner_stats"):
-            banner_stats = dict(page_data["banner_stats"])
-            public_stats = dict(page_data.get("public_stats", {}))
+        for b in page_data.get("trust_badges", []):
+            if b not in all_trust_badges:
+                all_trust_badges.append(b)
+        if page_data.get("job_listings"):
+            for j in page_data["job_listings"]:
+                if not any(ex.get("title") == j.get("title") and ex.get("url") == j.get("url") for ex in job_listings):
+                    job_listings.append(j)
+        if page_data.get("team"):
+            for t in page_data["team"]:
+                if not any(ex.get("name") == t.get("name") for ex in team):
+                    team.append(t)
+
+        for k, v in (page_data.get("banner_stats") or {}).items():
+            if v and k not in merged_banner_stats:
+                merged_banner_stats[k] = v
+        for k, v in (page_data.get("public_stats") or {}).items():
+            if v and k not in merged_public_stats:
+                merged_public_stats[k] = v
+
+        for next_path in page_data.get("same_site_paths", []):
+            next_path = next_path.split("#")[0].rstrip("/") or "/"
+            if next_path not in visited and next_path not in queue:
+                queue.append(next_path)
+
+    merged_public_stats.update(_extract_public_stats_from_banner(merged_banner_stats))
+
+    people_research: list[dict[str, Any]] = []
+    if team and SCRAPE_RESEARCH_PEOPLE:
+        logger.info("Researching %d team members (search + optional DuckDuckGo)", len(team))
+        for p in team:
+            res = _research_person(p.get("name", ""), p.get("title", ""))
+            people_research.append(res)
+            time.sleep(rate_limit_delay_sec)
 
     raw = {
         "url": base_url,
-        "pages": {path: {k: v for k, v in data.items() if k != "same_site_paths"} for path, data in pages.items()},
-        "banner_stats": banner_stats,
-        "public_stats": public_stats,
-        "value_propositions": all_value_propositions[:25],
-        "partners": all_partners[:25],
+        "pages": pages,
+        "banner_stats": merged_banner_stats,
+        "public_stats": merged_public_stats,
+        "value_propositions": all_value_propositions,
+        "partners": all_partners,
+        "trust_badges": all_trust_badges,
+        "job_listings": job_listings,
+        "team": team,
+        "people_research": people_research,
     }
     return raw
 
 
 def _clean_scrape_to_meaningful_stats(raw: dict[str, Any]) -> dict[str, Any]:
-    """
-    Build clean output for the report: banner stats (merchant_count, credit_issued,
-    growth_rate, nps_score) plus value_propositions and partners. Uses banner_stats
-    from the scraper (no script/timestamp noise).
-    """
+    """Build clean output: all banner/business stats, trust_badges, job_listings, team, people_research."""
     banner = raw.get("banner_stats", {})
     clean: dict[str, Any] = {
         "merchant_count": banner.get("merchant_count"),
         "credit_issued": banner.get("credit_issued"),
         "growth_rate": banner.get("growth_rate"),
         "nps_score": banner.get("nps_score"),
-        "value_propositions": raw.get("value_propositions", [])[:15],
-        "partners": raw.get("partners", [])[:15],
-        "pages_scraped": list(raw.get("pages", {}).keys()),
+        "true_approvals_pct": banner.get("true_approvals_pct"),
+        "conversion_lift_pct": banner.get("conversion_lift_pct"),
+        "avg_sale_lift_pct": banner.get("avg_sale_lift_pct"),
+        "value_propositions": raw.get("value_propositions", []),
+        "partners": raw.get("partners", []),
+        "trust_badges": raw.get("trust_badges", []),
+        "job_listings": raw.get("job_listings", []),
+        "team": raw.get("team", []),
+        "people_research": raw.get("people_research", []),
+        "pages_scraped": sorted(raw.get("pages", {}).keys()),
     }
     return clean
 
@@ -336,7 +481,7 @@ def scrape_and_save(
     raw_path: Path = CLARITYPAY_RAW_ARTIFACT,
     clean_path: Path = CLARITYPAY_CLEAN_ARTIFACT,
 ) -> dict[str, Any]:
-    """Scrape ClarityPay (multi-page); save raw and clean. Returns clean dict (used in report)."""
+    """Full-site scrape; save raw and clean. Returns clean dict (used in report)."""
     raw = scrape_claritypay()
     ensure_dir(raw_path)
     save_json(raw, raw_path)
@@ -346,8 +491,8 @@ def scrape_and_save(
     from src.config import CLARITYPAY_ARTIFACT
     save_json(clean, CLARITYPAY_ARTIFACT)
     logger.info(
-        "ClarityPay scrape: banner_stats=%s, pages=%s",
-        clean.get("merchant_count") or "—",
-        clean.get("pages_scraped", []),
+        "ClarityPay scrape: %d pages, banner_stats=%s",
+        len(clean.get("pages_scraped", [])),
+        {k: v for k, v in clean.items() if k in ("merchant_count", "credit_issued", "growth_rate", "nps_score", "true_approvals_pct", "conversion_lift_pct", "avg_sale_lift_pct") and v},
     )
     return clean

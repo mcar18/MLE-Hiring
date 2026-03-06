@@ -131,11 +131,19 @@ def build_report_context(
             "credit_issued": clarity.get("credit_issued"),
             "growth_rate": clarity.get("growth_rate"),
             "nps_score": clarity.get("nps_score"),
+            "true_approvals_pct": clarity.get("true_approvals_pct"),
+            "conversion_lift_pct": clarity.get("conversion_lift_pct"),
+            "avg_sale_lift_pct": clarity.get("avg_sale_lift_pct"),
             "value_propositions": clarity.get("value_propositions", []),
             "partners": clarity.get("partners", []),
+            "trust_badges": clarity.get("trust_badges", []),
+            "job_listings": clarity.get("job_listings", []),
+            "team": clarity.get("team", []),
+            "people_research": clarity.get("people_research", []),
+            "pages_scraped": clarity.get("pages_scraped", []),
         }
     except FileNotFoundError:
-        claritypay_insights = {"merchant_count": None, "credit_issued": None, "growth_rate": None, "nps_score": None, "value_propositions": [], "partners": []}
+        claritypay_insights = {"merchant_count": None, "credit_issued": None, "growth_rate": None, "nps_score": None, "true_approvals_pct": None, "conversion_lift_pct": None, "avg_sale_lift_pct": None, "value_propositions": [], "partners": [], "trust_badges": [], "job_listings": [], "team": [], "people_research": [], "pages_scraped": []}
 
     try:
         model_comparison = load_json(model_comparison_path)

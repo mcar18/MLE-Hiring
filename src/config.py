@@ -46,7 +46,10 @@ CLARITYPAY_URL = "https://www.claritypay.com"
 CLARITYPAY_BASE_DOMAIN = "www.claritypay.com"
 SCRAPE_TIMEOUT_SEC = 15
 SCRAPE_RATE_LIMIT_DELAY_SEC = 1.0
-SCRAPE_MAX_PAGES = 8  # cap on number of same-site pages to scrape
+# Cap on pages to scrape; crawl discovers links from every page until no new links or cap reached. 0 = no cap.
+SCRAPE_MAX_PAGES = 0
+# Set True to run web search (DuckDuckGo) for each team member on about-us page. Requires duckduckgo-search.
+SCRAPE_RESEARCH_PEOPLE = True
 USER_AGENT = "MLE-Hiring-Pipeline/1.0 (educational; rate-limited)"
 
 # Model
