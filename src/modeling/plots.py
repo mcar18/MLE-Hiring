@@ -8,6 +8,7 @@ from pathlib import Path
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+from matplotlib.ticker import PercentFormatter
 import numpy as np
 import seaborn as sns
 from sklearn.calibration import calibration_curve
@@ -32,8 +33,11 @@ def plot_roc_curve(y_true: np.ndarray, y_proba: np.ndarray, output_path: Path | 
     plt.plot([0, 1], [0, 1], color="navy", lw=2, linestyle="--")
     plt.xlim([0.0, 1.0])
     plt.ylim([0.0, 1.05])
-    plt.xlabel("False Positive Rate")
-    plt.ylabel("True Positive Rate")
+    ax = plt.gca()
+    ax.xaxis.set_major_formatter(PercentFormatter(xmax=1.0))
+    ax.yaxis.set_major_formatter(PercentFormatter(xmax=1.0))
+    plt.xlabel("False Positive Rate (%)")
+    plt.ylabel("True Positive Rate (%)")
     plt.title("ROC Curve (Out-of-Fold)")
     plt.legend(loc="lower right")
     plt.tight_layout()
@@ -51,8 +55,11 @@ def plot_pr_curve(y_true: np.ndarray, y_proba: np.ndarray, output_path: Path | N
     plt.plot(recall, precision, color="green", lw=2)
     plt.xlim([0.0, 1.0])
     plt.ylim([0.0, 1.05])
-    plt.xlabel("Recall")
-    plt.ylabel("Precision")
+    ax = plt.gca()
+    ax.xaxis.set_major_formatter(PercentFormatter(xmax=1.0))
+    ax.yaxis.set_major_formatter(PercentFormatter(xmax=1.0))
+    plt.xlabel("Recall (%)")
+    plt.ylabel("Precision (%)")
     plt.title("Precision-Recall Curve (Out-of-Fold)")
     plt.tight_layout()
     plt.savefig(output_path, dpi=100)
@@ -77,8 +84,11 @@ def plot_calibration_curve(y_true: np.ndarray, y_proba: np.ndarray, output_path:
     plt.plot([0, 1], [0, 1], "k--", lw=2, label="Perfectly calibrated")
     plt.xlim([0.0, 1.0])
     plt.ylim([0.0, 1.05])
-    plt.xlabel("Mean predicted probability")
-    plt.ylabel("Fraction of positives")
+    ax = plt.gca()
+    ax.xaxis.set_major_formatter(PercentFormatter(xmax=1.0))
+    ax.yaxis.set_major_formatter(PercentFormatter(xmax=1.0))
+    plt.xlabel("Mean predicted probability (%)")
+    plt.ylabel("Observed fraction of positives (%)")
     plt.title("Calibration Curve (Out-of-Fold)\nIllustrative only — small sample")
     plt.legend(loc="lower right")
     plt.tight_layout()
@@ -128,7 +138,9 @@ def plot_risk_distribution(prob_high_risk: np.ndarray, output_path: Path | None 
     output_path = output_path or _ensure_plots_dir() / "risk_distribution.png"
     plt.figure(figsize=(6, 4))
     plt.hist(prob_high_risk, bins=min(30, max(10, len(prob_high_risk) // 5)), edgecolor="black", alpha=0.7)
-    plt.xlabel("Predicted P(high risk)")
+    ax = plt.gca()
+    ax.xaxis.set_major_formatter(PercentFormatter(xmax=1.0))
+    plt.xlabel("Predicted P(high risk) (%)")
     plt.ylabel("Number of merchants")
     plt.title("Portfolio Risk Score Distribution")
     plt.tight_layout()
