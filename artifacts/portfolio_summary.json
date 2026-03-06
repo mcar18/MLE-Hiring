@@ -1,7 +1,7 @@
 {
-  "expected_high_risk_merchants": 3.543175144458932,
-  "average_predicted_risk": 0.07086350288917864,
-  "expected_loss_proxy": 3946.8868690492545,
+  "expected_high_risk_merchants": 3.42,
+  "average_predicted_risk": 0.0684,
+  "expected_loss_proxy": 5181.200000000001,
   "assumed_loss_rate": 0.02,
   "n_merchants": 50
 }

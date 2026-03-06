@@ -31,180 +31,180 @@ The report must include these sections (use markdown headers). Keep the total re
 Context (JSON):
 {
   "portfolio_summary": {
-    "expected_high_risk_merchants": 3.543175144458932,
-    "average_predicted_risk": 0.07086350288917864,
-    "expected_loss_proxy": 3946.8868690492545,
+    "expected_high_risk_merchants": 3.42,
+    "average_predicted_risk": 0.0684,
+    "expected_loss_proxy": 5181.200000000001,
     "assumed_loss_rate": 0.02,
     "n_merchants": 50
   },
   "model_metrics": {
-    "roc_auc": 0.711111111111111,
-    "precision": 0.2,
-    "recall": 0.2,
-    "f1": 0.2,
-    "brier_score": 0.056668209664122914
+    "roc_auc": 0.5,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "brier_score": 0.081316
   },
   "model_comparison": {
     "logistic_regression": {
-      "roc_auc": 0.711111111111111,
-      "precision": 0.2,
-      "recall": 0.2,
-      "f1": 0.2,
-      "brier_score": 0.056668209664122914
-    },
-    "random_forest": {
-      "roc_auc": 0.711111111111111,
+      "roc_auc": 0.4666666666666667,
       "precision": 0.0,
       "recall": 0.0,
       "f1": 0.0,
-      "brier_score": 0.06432
+      "brier_score": 0.07380750009657602
+    },
+    "random_forest": {
+      "roc_auc": 0.5,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "brier_score": 0.081316
     }
   },
   "calibration_metrics": {
-    "brier_score": 0.056668209664122914,
+    "brier_score": 0.081316,
     "interpretation": "Lower Brier score indicates better probabilistic accuracy; values near 0.25 are no better than chance for balanced binary outcomes.",
     "caveat": "Calibration results are illustrative only: the dataset is very small and out-of-fold estimates have high variance. Do not rely on these for production thresholds."
   },
   "top_risk_merchants": [
     {
-      "merchant_id": "M005",
-      "country": "United States",
-      "monthly_volume": 45000.0,
-      "dispute_rate": 0.0025,
-      "prob_high_risk": 0.520935532373147,
-      "internal_risk_flag": "high"
-    },
-    {
-      "merchant_id": "M041",
-      "country": "Romania",
-      "monthly_volume": 51000.0,
-      "dispute_rate": 0.002027027027027027,
-      "prob_high_risk": 0.33677803827323954,
-      "internal_risk_flag": "high"
-    },
-    {
       "merchant_id": "M032",
       "country": "United Kingdom",
       "monthly_volume": 49000.0,
       "dispute_rate": 0.0,
-      "prob_high_risk": 0.33529538093023276,
-      "internal_risk_flag": "high"
+      "prob_high_risk": 0.45,
+      "internal_risk_flag": "low"
     },
     {
-      "merchant_id": "M020",
-      "country": "Portugal",
-      "monthly_volume": 22000.0,
-      "dispute_rate": 0.0,
-      "prob_high_risk": 0.3222520683840032,
-      "internal_risk_flag": "high"
-    },
-    {
-      "merchant_id": "M014",
+      "merchant_id": "M027",
       "country": "United Kingdom",
-      "monthly_volume": 41000.0,
-      "dispute_rate": 0.0,
-      "prob_high_risk": 0.26628540330986455,
-      "internal_risk_flag": "high"
+      "monthly_volume": 73000.0,
+      "dispute_rate": 0.0012244897959183673,
+      "prob_high_risk": 0.42,
+      "internal_risk_flag": "medium"
     },
     {
-      "merchant_id": "M008",
-      "country": "United Kingdom",
-      "monthly_volume": 67000.0,
-      "dispute_rate": 0.0004761904761904762,
-      "prob_high_risk": 0.15567709252917908,
-      "internal_risk_flag": "high"
+      "merchant_id": "M007",
+      "country": "United States",
+      "monthly_volume": 156000.0,
+      "dispute_rate": 0.0004878048780487805,
+      "prob_high_risk": 0.38,
+      "internal_risk_flag": "low"
     },
     {
       "merchant_id": "M004",
       "country": "United Kingdom",
       "monthly_volume": 78000.0,
       "dispute_rate": 0.0,
-      "prob_high_risk": 0.1452895989850873,
-      "internal_risk_flag": "medium"
+      "prob_high_risk": 0.3,
+      "internal_risk_flag": "low"
     },
     {
-      "merchant_id": "M044",
-      "country": "United Kingdom",
-      "monthly_volume": 76000.0,
-      "dispute_rate": 0.00042735042735042735,
-      "prob_high_risk": 0.1386049111459169,
-      "internal_risk_flag": "high"
+      "merchant_id": "M018",
+      "country": "Ireland",
+      "monthly_volume": 44000.0,
+      "dispute_rate": 0.0016,
+      "prob_high_risk": 0.28,
+      "internal_risk_flag": "medium"
     },
     {
       "merchant_id": "M002",
       "country": "United States",
       "monthly_volume": 89000.0,
       "dispute_rate": 0.002380952380952381,
-      "prob_high_risk": 0.11655034597413923,
-      "internal_risk_flag": "high"
+      "prob_high_risk": 0.2,
+      "internal_risk_flag": "medium"
     },
     {
-      "merchant_id": "M026",
-      "country": "Sweden",
-      "monthly_volume": 115000.0,
-      "dispute_rate": 0.0003125,
-      "prob_high_risk": 0.11212847523482683,
-      "internal_risk_flag": "high"
+      "merchant_id": "M010",
+      "country": "United Kingdom",
+      "monthly_volume": 52000.0,
+      "dispute_rate": 0.0012121212121212121,
+      "prob_high_risk": 0.18,
+      "internal_risk_flag": "low"
+    },
+    {
+      "merchant_id": "M005",
+      "country": "United States",
+      "monthly_volume": 45000.0,
+      "dispute_rate": 0.0025,
+      "prob_high_risk": 0.13,
+      "internal_risk_flag": "low"
+    },
+    {
+      "merchant_id": "M033",
+      "country": "Denmark",
+      "monthly_volume": 36000.0,
+      "dispute_rate": 0.0009523809523809524,
+      "prob_high_risk": 0.1,
+      "internal_risk_flag": "low"
+    },
+    {
+      "merchant_id": "M009",
+      "country": "France",
+      "monthly_volume": 34000.0,
+      "dispute_rate": 0.0,
+      "prob_high_risk": 0.08,
+      "internal_risk_flag": "low"
     }
   ],
   "risk_drivers": {
     "high_dispute_rate_merchants": 4,
     "total_merchants": 50,
     "internal_risk_breakdown": {
-      "medium": 17,
-      "high": 17,
-      "low": 16
+      "low": 24,
+      "medium": 20,
+      "high": 6
     }
   },
   "feature_importance_ranking": [
     [
-      "internal_risk_flag_encoded",
-      1.119637220042571
-    ],
-    [
-      "volume_growth_proxy",
-      0.9044919480147746
-    ],
-    [
-      "binary_high_internal_flag",
-      0.8717722812732037
-    ],
-    [
-      "region_encoded",
-      0.6586431889383262
-    ],
-    [
-      "log_transaction_count",
-      0.06375558004341698
-    ],
-    [
       "volume_per_transaction",
-      0.010287879048796947
+      0.21657239495436448
     ],
     [
       "avg_ticket",
-      0.010287879048796935
+      0.19924351614230848
+    ],
+    [
+      "volume_growth_proxy",
+      0.12683623492505952
+    ],
+    [
+      "region_encoded",
+      0.11796492859885757
+    ],
+    [
+      "log_transaction_count",
+      0.08864100613282404
     ],
     [
       "transaction_count",
-      0.00397586176655649
+      0.08569410093515499
     ],
     [
       "log_monthly_volume",
-      0.0014202512208258528
+      0.08007283328142623
     ],
     [
       "monthly_volume",
-      5.6033362095833105e-05
+      0.0740735195361654
+    ],
+    [
+      "internal_risk_flag_encoded",
+      0.005871537421810694
+    ],
+    [
+      "binary_high_internal_flag",
+      0.005029928072028568
     ]
   ],
   "portfolio_risk_histogram": {
-    "min": 4.682300411391176e-07,
-    "max": 0.520935532373147,
-    "mean": 0.07086350288917864,
-    "median": 0.03164722557950874,
-    "p75": 0.07624315832921537,
-    "p90": 0.1667379236072478
+    "min": 0.0,
+    "max": 0.45,
+    "mean": 0.0684,
+    "median": 0.02,
+    "p75": 0.06,
+    "p90": 0.20800000000000013
   },
   "scraped_claritypay_insights": {
     "merchant_count": "1900+",

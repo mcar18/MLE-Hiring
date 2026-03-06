@@ -1,59 +1,68 @@
 # Underwriting Memo for BNPL Merchant Portfolio
 
 ## Executive Summary
-The BNPL merchant portfolio exhibits a moderate risk profile with an expected high-risk count of approximately 3.54 out of 50 merchants. The average predicted risk is 0.071, with an expected loss proxy of $3,946.87. **Recommendation: Approve with Conditions.**
+The BNPL merchant portfolio exhibits a manageable risk profile, with an expected high-risk merchant count of 3.42 and an average predicted risk of 0.0684. The expected loss proxy stands at $5,181.20. **Recommendation: Approve with Conditions.**
 
 ## Data Sources & Methodology
-Data was sourced from various formats including CSV, mock API, REST Countries, PDF, and a ClarityPay scrape. The risk model was built using out-of-fold evaluation and two baseline models to ensure robustness.
+Data was sourced from CSV files, a mock API, REST Countries, and a PDF document, as well as a scrape of ClarityPay insights. The risk model was built using out-of-fold evaluation with two baseline models: Logistic Regression and Random Forest.
 
 ## Portfolio Risk Overview
-The portfolio consists of 50 merchants, with an expected high-risk count of 3.54. The average predicted risk is 0.071, while the expected loss proxy is $3,946.87. The portfolio risk histogram indicates a minimum risk of 0.000000468, a mean of 0.071, a median of 0.032, and a 90th percentile risk of 0.167.
+The portfolio consists of 50 merchants, with the following risk distribution:
+- **Minimum Risk:** 0.0
+- **Mean Risk:** 0.0684
+- **Median Risk:** 0.02
+- **90th Percentile Risk:** 0.208
+
+The expected high-risk merchant count is 3.42, and the expected loss proxy is $5,181.20.
 
 ## Top Risk Merchants
-The following are the top 10 merchants by predicted risk:
+The top 10 merchants by predicted risk are as follows:
 
-| Merchant ID | Country       | Monthly Volume | Prob High Risk | Internal Risk Flag |
-|-------------|---------------|----------------|----------------|---------------------|
-| M005        | United States | $45,000        | 0.521          | high                |
-| M041        | Romania       | $51,000        | 0.337          | high                |
-| M032        | United Kingdom | $49,000       | 0.335          | high                |
-| M020        | Portugal      | $22,000        | 0.322          | high                |
-| M014        | United Kingdom | $41,000       | 0.266          | high                |
-| M008        | United Kingdom | $67,000       | 0.156          | high                |
-| M004        | United Kingdom | $78,000       | 0.145          | medium              |
-| M044        | United Kingdom | $76,000       | 0.139          | high                |
-| M002        | United States | $89,000        | 0.117          | high                |
-| M026        | Sweden        | $115,000       | 0.112          | high                |
+| Merchant ID | Country        | Monthly Volume | Prob High Risk | Internal Risk Flag |
+|-------------|----------------|----------------|----------------|---------------------|
+| M032        | United Kingdom  | $49,000        | 0.45           | low                 |
+| M027        | United Kingdom  | $73,000        | 0.42           | medium              |
+| M007        | United States   | $156,000       | 0.38           | low                 |
+| M004        | United Kingdom  | $78,000        | 0.30           | low                 |
+| M018        | Ireland         | $44,000        | 0.28           | medium              |
+| M002        | United States   | $89,000        | 0.20           | medium              |
+| M010        | United Kingdom  | $52,000        | 0.18           | low                 |
+| M005        | United States   | $45,000        | 0.13           | low                 |
+| M033        | Denmark         | $36,000        | 0.10           | low                 |
+| M009        | France          | $34,000        | 0.08           | low                 |
 
 ## Key Risk Drivers
-Key risk drivers include a total of 4 high dispute rate merchants out of 50. The internal risk breakdown shows 17 merchants classified as high risk, 17 as medium, and 16 as low. The top feature importance rankings indicate that the internal risk flag and volume growth proxy are significant predictors of risk.
+Key risk drivers include:
+- **High Dispute Rate Merchants:** 4
+- **Internal Risk Breakdown:** 24 low, 20 medium, 6 high
+- **Top Feature Importance Rankings:**
+  - Volume per transaction: 0.2166
+  - Average ticket: 0.1992
+  - Volume growth proxy: 0.1268
 
 ## External Context (ClarityPay)
-ClarityPay reports a merchant count of over 1,900, with more than $1.2 billion in credit issued and a growth rate of 25%. The NPS score stands at +91, indicating strong customer satisfaction.
+ClarityPay has over 1,900 merchants, with more than $1.2 billion in credit issued and a growth rate of 25%. The NPS score is +91, indicating high customer satisfaction.
 
 ## Document Insights (PDF)
-The PDF insights indicate a comprehensive analysis of the portfolio, highlighting various risk factors and performance metrics relevant to underwriting decisions.
+The document insights indicate that the risk assessment is based on a limited sample size, which may not accurately represent broader trends.
 
 ## Model Comparison
-The logistic regression model achieved a ROC AUC of 0.711, with precision, recall, and F1 scores all at 0.2. The random forest model performed poorly with a precision, recall, and F1 score of 0.0. The logistic regression model was chosen for its superior ROC AUC performance.
+The Random Forest model was chosen over Logistic Regression based on its ROC AUC of 0.5 compared to 0.4667 for Logistic Regression. Both models exhibited low precision, recall, and F1 scores, indicating challenges in risk prediction.
 
 ## Calibration & Probability Quality
-Calibration metrics indicate a Brier score of 0.0567, suggesting that predicted probabilities align reasonably well with observed outcomes. However, the small sample size limits confidence in these results, and they should be considered illustrative only.
+The Brier score of 0.0813 suggests that predicted probabilities are roughly aligned with observed outcomes, but the small sample size limits confidence in these results. Calibration is crucial for setting underwriting thresholds to ensure that a 0.3 probability corresponds to a ~30% observed high-risk rate.
 
 ## Recommendations & Controls
 - Implement manual review for merchants with a probability of high risk greater than 0.5.
-- Conduct manual review for merchants flagged as high risk internally.
-- Monitor dispute rates closely for high-risk merchants.
-- Regularly update the risk model with new data to improve accuracy.
-- Establish thresholds for ongoing monitoring of merchant performance.
+- Conduct manual review for merchants with an internal risk flag marked as high.
+- Monitor dispute rates closely and adjust risk thresholds as necessary.
+- Regularly update the risk model with new data to improve predictive accuracy.
 
 ## Caveats & Assumptions
 - High dispute risk is defined as a dispute rate greater than 0.002.
 - The expected loss proxy uses a 2% assumed loss rate on at-risk volume.
-- Out-of-fold predictions were utilized for portfolio metrics.
-- REST Countries were used for region enrichment.
-
-**Model limitations:** The model's performance may not generalize well due to the small sample size and the nature of the data used.
+- The dataset is small and not representative of production.
+- Calibration results are illustrative only due to high variance in out-of-fold estimates.
 
 **Recommendation: Approve with Conditions**
 - Manual review for merchants with prob_high_risk > 0.5.

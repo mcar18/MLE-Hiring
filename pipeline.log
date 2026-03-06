@@ -357,3 +357,81 @@
 2026-03-06 01:11:44 | INFO | src.utils.io_utils | Saved JSON: C:\Users\Owner\OneDrive\Documents\Python Scripts\MLE-Hiring\artifacts\report_context.json
 2026-03-06 01:12:02 | INFO | src.reporting.generate_report | Report saved: C:\Users\Owner\OneDrive\Documents\Python Scripts\MLE-Hiring\artifacts\underwriting_report.md
 2026-03-06 01:12:02 | INFO | __main__ | Pipeline complete. Artifacts in C:\Users\Owner\OneDrive\Documents\Python Scripts\MLE-Hiring\artifacts
+2026-03-06 02:51:23 | INFO | __main__ | Starting pipeline
+2026-03-06 02:51:23 | INFO | __main__ | Mock API is ready
+2026-03-06 02:51:23 | INFO | src.ingestion.csv_ingest | Loaded merchants CSV: C:\Users\Owner\OneDrive\Documents\Python Scripts\MLE-Hiring\data\merchants.csv (50 rows)
+2026-03-06 02:51:23 | INFO | __main__ | CSV: 50 valid rows, 0 errors
+2026-03-06 02:51:23 | INFO | src.ingestion.pdf_async_ingest | PDF extracted: C:\Users\Owner\OneDrive\Documents\Python Scripts\MLE-Hiring\data\sample_merchant_summary.pdf (619 chars, summary 500 chars)
+2026-03-06 02:51:23 | INFO | src.utils.io_utils | Saved JSON: C:\Users\Owner\OneDrive\Documents\Python Scripts\MLE-Hiring\artifacts\pdf_text.json
+2026-03-06 02:51:23 | INFO | src.utils.io_utils | Saved JSON: C:\Users\Owner\OneDrive\Documents\Python Scripts\MLE-Hiring\artifacts\pdf_summary.json
+2026-03-06 02:51:23 | INFO | src.ingestion.claritypay_scraper | Scraping page / (0 queued, 1 visited)
+2026-03-06 02:51:25 | INFO | src.ingestion.claritypay_scraper | Scraping page /about-us (7 queued, 2 visited)
+2026-03-06 02:51:26 | INFO | src.ingestion.claritypay_scraper | Scraping page /careers (6 queued, 3 visited)
+2026-03-06 02:51:28 | INFO | src.ingestion.claritypay_scraper | Scraping page /claritypay-program-services-llc-licenses-registrations (5 queued, 4 visited)
+2026-03-06 02:51:29 | INFO | src.ingestion.claritypay_scraper | Scraping page /contact-us (4 queued, 5 visited)
+2026-03-06 02:51:30 | INFO | src.ingestion.claritypay_scraper | Scraping page /faqs (3 queued, 6 visited)
+2026-03-06 02:51:32 | INFO | src.ingestion.claritypay_scraper | Scraping page /for-business (2 queued, 7 visited)
+2026-03-06 02:51:33 | INFO | src.ingestion.claritypay_scraper | Scraping page /privacy-policy (1 queued, 8 visited)
+2026-03-06 02:51:35 | INFO | src.ingestion.claritypay_scraper | Scraping page /terms-of-use (0 queued, 9 visited)
+2026-03-06 02:51:36 | INFO | src.ingestion.claritypay_scraper | Researching 18 team members (search + optional DuckDuckGo)
+2026-03-06 02:51:54 | INFO | src.utils.io_utils | Saved JSON: C:\Users\Owner\OneDrive\Documents\Python Scripts\MLE-Hiring\artifacts\raw_scrape.json
+2026-03-06 02:51:54 | INFO | src.utils.io_utils | Saved JSON: C:\Users\Owner\OneDrive\Documents\Python Scripts\MLE-Hiring\artifacts\clean_scrape.json
+2026-03-06 02:51:54 | INFO | src.utils.io_utils | Saved JSON: C:\Users\Owner\OneDrive\Documents\Python Scripts\MLE-Hiring\artifacts\claritypay_parsed.json
+2026-03-06 02:51:54 | INFO | src.ingestion.claritypay_scraper | ClarityPay scrape: 9 pages, banner_stats={'merchant_count': '1900+', 'credit_issued': '$1.2B+', 'growth_rate': '25%', 'nps_score': '+91', 'true_approvals_pct': '85%', 'conversion_lift_pct': '250%', 'avg_sale_lift_pct': '200%'}
+2026-03-06 02:52:02 | INFO | src.ingestion.collate | Collated 50 merchants
+2026-03-06 02:52:02 | INFO | __main__ | Collated: C:\Users\Owner\OneDrive\Documents\Python Scripts\MLE-Hiring\artifacts\collated.parquet
+2026-03-06 02:52:02 | INFO | src.features.feature_builder | Built features (no dispute_rate to avoid target leakage): monthly_volume, transaction_count, avg_ticket, volume_growth_proxy, internal_risk_flag_encoded, region_encoded, log_monthly_volume, log_transaction_count, binary_high_internal_flag, volume_per_transaction
+2026-03-06 02:52:03 | INFO | src.utils.io_utils | Saved JSON: C:\Users\Owner\OneDrive\Documents\Python Scripts\MLE-Hiring\artifacts\model_comparison.json
+2026-03-06 02:52:03 | INFO | src.modeling.train_model | Model comparison: LR {'roc_auc': 0.4666666666666667, 'precision': 0.0, 'recall': 0.0, 'f1': 0.0, 'brier_score': 0.07380750009657602} | RF {'roc_auc': 0.5, 'precision': 0.0, 'recall': 0.0, 'f1': 0.0, 'brier_score': 0.081316}
+2026-03-06 02:52:03 | INFO | src.modeling.train_model | Chosen model: random_forest (ROC AUC=0.5000, F1=0.0000)
+2026-03-06 02:52:03 | INFO | src.modeling.train_model | Saved model: C:\Users\Owner\OneDrive\Documents\Python Scripts\MLE-Hiring\artifacts\model.pkl
+2026-03-06 02:52:03 | INFO | src.portfolio.aggregate_risk | Portfolio: expected_high_risk=3.42, avg_risk=0.0684, expected_loss_proxy=5181.20
+2026-03-06 02:52:03 | INFO | src.utils.io_utils | Saved JSON: C:\Users\Owner\OneDrive\Documents\Python Scripts\MLE-Hiring\artifacts\portfolio_summary.json
+2026-03-06 02:52:03 | INFO | src.modeling.plots | Saved C:\Users\Owner\OneDrive\Documents\Python Scripts\MLE-Hiring\artifacts\plots\roc_curve.png
+2026-03-06 02:52:03 | INFO | src.modeling.plots | Saved C:\Users\Owner\OneDrive\Documents\Python Scripts\MLE-Hiring\artifacts\plots\pr_curve.png
+2026-03-06 02:52:03 | INFO | src.modeling.plots | Saved C:\Users\Owner\OneDrive\Documents\Python Scripts\MLE-Hiring\artifacts\plots\confusion_matrix.png
+2026-03-06 02:52:03 | INFO | src.modeling.plots | Saved C:\Users\Owner\OneDrive\Documents\Python Scripts\MLE-Hiring\artifacts\plots\calibration_curve.png
+2026-03-06 02:52:03 | INFO | src.modeling.plots | Saved C:\Users\Owner\OneDrive\Documents\Python Scripts\MLE-Hiring\artifacts\plots\feature_importance.png
+2026-03-06 02:52:03 | INFO | src.modeling.plots | Saved C:\Users\Owner\OneDrive\Documents\Python Scripts\MLE-Hiring\artifacts\plots\risk_distribution.png
+2026-03-06 02:52:03 | INFO | src.utils.io_utils | Saved JSON: C:\Users\Owner\OneDrive\Documents\Python Scripts\MLE-Hiring\artifacts\report_context.json
+2026-03-06 02:52:17 | INFO | src.reporting.generate_report | Report saved: C:\Users\Owner\OneDrive\Documents\Python Scripts\MLE-Hiring\artifacts\underwriting_report.md
+2026-03-06 02:52:17 | INFO | __main__ | Pipeline complete. Artifacts in C:\Users\Owner\OneDrive\Documents\Python Scripts\MLE-Hiring\artifacts
+2026-03-06 02:56:33 | INFO | __main__ | Starting pipeline
+2026-03-06 02:56:33 | INFO | __main__ | Mock API is ready
+2026-03-06 02:56:33 | INFO | src.ingestion.csv_ingest | Loaded merchants CSV: C:\Users\Owner\OneDrive\Documents\Python Scripts\MLE-Hiring\data\merchants.csv (50 rows)
+2026-03-06 02:56:33 | INFO | __main__ | CSV: 50 valid rows, 0 errors
+2026-03-06 02:56:33 | INFO | src.ingestion.pdf_async_ingest | PDF extracted: C:\Users\Owner\OneDrive\Documents\Python Scripts\MLE-Hiring\data\sample_merchant_summary.pdf (619 chars, summary 500 chars)
+2026-03-06 02:56:33 | INFO | src.utils.io_utils | Saved JSON: C:\Users\Owner\OneDrive\Documents\Python Scripts\MLE-Hiring\artifacts\pdf_text.json
+2026-03-06 02:56:33 | INFO | src.utils.io_utils | Saved JSON: C:\Users\Owner\OneDrive\Documents\Python Scripts\MLE-Hiring\artifacts\pdf_summary.json
+2026-03-06 02:56:33 | INFO | src.ingestion.claritypay_scraper | Scraping page / (0 queued, 1 visited)
+2026-03-06 02:56:35 | INFO | src.ingestion.claritypay_scraper | Scraping page /about-us (7 queued, 2 visited)
+2026-03-06 02:56:36 | INFO | src.ingestion.claritypay_scraper | Scraping page /careers (6 queued, 3 visited)
+2026-03-06 02:56:38 | INFO | src.ingestion.claritypay_scraper | Scraping page /claritypay-program-services-llc-licenses-registrations (5 queued, 4 visited)
+2026-03-06 02:56:39 | INFO | src.ingestion.claritypay_scraper | Scraping page /contact-us (4 queued, 5 visited)
+2026-03-06 02:56:40 | INFO | src.ingestion.claritypay_scraper | Scraping page /faqs (3 queued, 6 visited)
+2026-03-06 02:56:42 | INFO | src.ingestion.claritypay_scraper | Scraping page /for-business (2 queued, 7 visited)
+2026-03-06 02:56:43 | INFO | src.ingestion.claritypay_scraper | Scraping page /privacy-policy (1 queued, 8 visited)
+2026-03-06 02:56:45 | INFO | src.ingestion.claritypay_scraper | Scraping page /terms-of-use (0 queued, 9 visited)
+2026-03-06 02:56:46 | INFO | src.ingestion.claritypay_scraper | Researching 18 team members (search + optional DuckDuckGo)
+2026-03-06 02:57:04 | INFO | src.utils.io_utils | Saved JSON: C:\Users\Owner\OneDrive\Documents\Python Scripts\MLE-Hiring\artifacts\raw_scrape.json
+2026-03-06 02:57:04 | INFO | src.utils.io_utils | Saved JSON: C:\Users\Owner\OneDrive\Documents\Python Scripts\MLE-Hiring\artifacts\clean_scrape.json
+2026-03-06 02:57:04 | INFO | src.utils.io_utils | Saved JSON: C:\Users\Owner\OneDrive\Documents\Python Scripts\MLE-Hiring\artifacts\claritypay_parsed.json
+2026-03-06 02:57:04 | INFO | src.ingestion.claritypay_scraper | ClarityPay scrape: 9 pages, banner_stats={'merchant_count': '1900+', 'credit_issued': '$1.2B+', 'growth_rate': '25%', 'nps_score': '+91', 'true_approvals_pct': '85%', 'conversion_lift_pct': '250%', 'avg_sale_lift_pct': '200%'}
+2026-03-06 02:57:12 | INFO | src.ingestion.collate | Collated 50 merchants
+2026-03-06 02:57:12 | INFO | __main__ | Collated: C:\Users\Owner\OneDrive\Documents\Python Scripts\MLE-Hiring\artifacts\collated.parquet
+2026-03-06 02:57:12 | INFO | src.features.feature_builder | Built features (no dispute_rate to avoid target leakage): monthly_volume, transaction_count, avg_ticket, volume_growth_proxy, internal_risk_flag_encoded, region_encoded, log_monthly_volume, log_transaction_count, binary_high_internal_flag, volume_per_transaction
+2026-03-06 02:57:13 | INFO | src.utils.io_utils | Saved JSON: C:\Users\Owner\OneDrive\Documents\Python Scripts\MLE-Hiring\artifacts\model_comparison.json
+2026-03-06 02:57:13 | INFO | src.modeling.train_model | Model comparison: LR {'roc_auc': 0.4666666666666667, 'precision': 0.0, 'recall': 0.0, 'f1': 0.0, 'brier_score': 0.07380750009657602} | RF {'roc_auc': 0.5, 'precision': 0.0, 'recall': 0.0, 'f1': 0.0, 'brier_score': 0.081316}
+2026-03-06 02:57:13 | INFO | src.modeling.train_model | Chosen model: random_forest (ROC AUC=0.5000, F1=0.0000)
+2026-03-06 02:57:13 | INFO | src.modeling.train_model | Saved model: C:\Users\Owner\OneDrive\Documents\Python Scripts\MLE-Hiring\artifacts\model.pkl
+2026-03-06 02:57:13 | INFO | src.portfolio.aggregate_risk | Portfolio: expected_high_risk=3.42, avg_risk=0.0684, expected_loss_proxy=5181.20
+2026-03-06 02:57:13 | INFO | src.utils.io_utils | Saved JSON: C:\Users\Owner\OneDrive\Documents\Python Scripts\MLE-Hiring\artifacts\portfolio_summary.json
+2026-03-06 02:57:13 | INFO | src.modeling.plots | Saved C:\Users\Owner\OneDrive\Documents\Python Scripts\MLE-Hiring\artifacts\plots\roc_curve.png
+2026-03-06 02:57:13 | INFO | src.modeling.plots | Saved C:\Users\Owner\OneDrive\Documents\Python Scripts\MLE-Hiring\artifacts\plots\pr_curve.png
+2026-03-06 02:57:13 | INFO | src.modeling.plots | Saved C:\Users\Owner\OneDrive\Documents\Python Scripts\MLE-Hiring\artifacts\plots\confusion_matrix.png
+2026-03-06 02:57:13 | INFO | src.modeling.plots | Saved C:\Users\Owner\OneDrive\Documents\Python Scripts\MLE-Hiring\artifacts\plots\calibration_curve.png
+2026-03-06 02:57:13 | INFO | src.modeling.plots | Saved C:\Users\Owner\OneDrive\Documents\Python Scripts\MLE-Hiring\artifacts\plots\feature_importance.png
+2026-03-06 02:57:13 | INFO | src.modeling.plots | Saved C:\Users\Owner\OneDrive\Documents\Python Scripts\MLE-Hiring\artifacts\plots\risk_distribution.png
+2026-03-06 02:57:13 | INFO | src.utils.io_utils | Saved JSON: C:\Users\Owner\OneDrive\Documents\Python Scripts\MLE-Hiring\artifacts\report_context.json
+2026-03-06 02:57:34 | INFO | src.reporting.generate_report | Report saved: C:\Users\Owner\OneDrive\Documents\Python Scripts\MLE-Hiring\artifacts\underwriting_report.md
+2026-03-06 02:57:34 | INFO | __main__ | Pipeline complete. Artifacts in C:\Users\Owner\OneDrive\Documents\Python Scripts\MLE-Hiring\artifacts
