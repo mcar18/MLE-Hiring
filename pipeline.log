@@ -1,0 +1,35 @@
+2026-03-05 19:06:07 | INFO | __main__ | Starting pipeline
+2026-03-05 19:06:08 | INFO | __main__ | Mock API is ready
+2026-03-05 19:06:08 | INFO | src.ingestion.csv_ingest | Loaded merchants CSV: C:\Users\Owner\OneDrive\Documents\Python Scripts\MLE-Hiring\data\merchants.csv (50 rows)
+2026-03-05 19:06:08 | INFO | __main__ | CSV: 50 valid rows, 0 errors
+2026-03-05 19:06:08 | INFO | src.ingestion.pdf_async_ingest | PDF extracted: C:\Users\Owner\OneDrive\Documents\Python Scripts\MLE-Hiring\data\sample_merchant_summary.pdf (619 chars)
+2026-03-05 19:06:08 | INFO | src.utils.io_utils | Saved JSON: C:\Users\Owner\OneDrive\Documents\Python Scripts\MLE-Hiring\artifacts\pdf_text.json
+2026-03-05 19:06:09 | INFO | src.utils.io_utils | Saved JSON: C:\Users\Owner\OneDrive\Documents\Python Scripts\MLE-Hiring\artifacts\claritypay_parsed.json
+2026-03-05 19:06:18 | INFO | src.ingestion.collate | Collated 50 merchants
+2026-03-05 19:06:19 | INFO | __main__ | Collated: C:\Users\Owner\OneDrive\Documents\Python Scripts\MLE-Hiring\artifacts\collated.parquet
+2026-03-05 19:06:19 | INFO | src.features.feature_builder | Built features: dispute_rate, avg_ticket, volume_growth_proxy, internal_risk_flag_encoded, region_encoded
+2026-03-05 19:06:19 | INFO | src.modeling.train_model | Model metrics: ROC AUC=1.0000, precision=1.0000, recall=1.0000
+2026-03-05 19:06:19 | INFO | src.modeling.train_model | Saved model: C:\Users\Owner\OneDrive\Documents\Python Scripts\MLE-Hiring\artifacts\model.pkl
+2026-03-05 19:06:19 | INFO | src.portfolio.aggregate_risk | Portfolio: expected_high_risk=3.46, avg_risk=0.0692, expected_loss_proxy=4447.60
+2026-03-05 19:06:19 | INFO | src.utils.io_utils | Saved JSON: C:\Users\Owner\OneDrive\Documents\Python Scripts\MLE-Hiring\artifacts\portfolio_summary.json
+2026-03-05 19:06:19 | INFO | src.utils.io_utils | Saved JSON: C:\Users\Owner\OneDrive\Documents\Python Scripts\MLE-Hiring\artifacts\report_context.json
+2026-03-05 19:06:19 | WARNING | src.reporting.llm_client | OPENAI_API_KEY not set; using deterministic mock LLM response.
+2026-03-05 19:06:19 | INFO | src.reporting.generate_report | Report saved: C:\Users\Owner\OneDrive\Documents\Python Scripts\MLE-Hiring\artifacts\underwriting_report.md
+2026-03-05 19:06:19 | INFO | __main__ | Pipeline complete. Artifacts in C:\Users\Owner\OneDrive\Documents\Python Scripts\MLE-Hiring\artifacts
+2026-03-05 19:18:28 | INFO | __main__ | Starting pipeline
+2026-03-05 19:18:28 | INFO | __main__ | Mock API is ready
+2026-03-05 19:18:28 | INFO | src.ingestion.csv_ingest | Loaded merchants CSV: C:\Users\Owner\OneDrive\Documents\Python Scripts\MLE-Hiring\data\merchants.csv (50 rows)
+2026-03-05 19:18:28 | INFO | __main__ | CSV: 50 valid rows, 0 errors
+2026-03-05 19:18:28 | INFO | src.ingestion.pdf_async_ingest | PDF extracted: C:\Users\Owner\OneDrive\Documents\Python Scripts\MLE-Hiring\data\sample_merchant_summary.pdf (619 chars)
+2026-03-05 19:18:28 | INFO | src.utils.io_utils | Saved JSON: C:\Users\Owner\OneDrive\Documents\Python Scripts\MLE-Hiring\artifacts\pdf_text.json
+2026-03-05 19:18:30 | INFO | src.utils.io_utils | Saved JSON: C:\Users\Owner\OneDrive\Documents\Python Scripts\MLE-Hiring\artifacts\claritypay_parsed.json
+2026-03-05 19:18:37 | INFO | src.ingestion.collate | Collated 50 merchants
+2026-03-05 19:18:37 | INFO | __main__ | Collated: C:\Users\Owner\OneDrive\Documents\Python Scripts\MLE-Hiring\artifacts\collated.parquet
+2026-03-05 19:18:37 | INFO | src.features.feature_builder | Built features: dispute_rate, avg_ticket, volume_growth_proxy, internal_risk_flag_encoded, region_encoded
+2026-03-05 19:18:37 | INFO | src.modeling.train_model | Model metrics: ROC AUC=1.0000, precision=1.0000, recall=1.0000
+2026-03-05 19:18:37 | INFO | src.modeling.train_model | Saved model: C:\Users\Owner\OneDrive\Documents\Python Scripts\MLE-Hiring\artifacts\model.pkl
+2026-03-05 19:18:37 | INFO | src.portfolio.aggregate_risk | Portfolio: expected_high_risk=3.46, avg_risk=0.0692, expected_loss_proxy=4447.60
+2026-03-05 19:18:37 | INFO | src.utils.io_utils | Saved JSON: C:\Users\Owner\OneDrive\Documents\Python Scripts\MLE-Hiring\artifacts\portfolio_summary.json
+2026-03-05 19:18:37 | INFO | src.utils.io_utils | Saved JSON: C:\Users\Owner\OneDrive\Documents\Python Scripts\MLE-Hiring\artifacts\report_context.json
+2026-03-05 19:18:52 | INFO | src.reporting.generate_report | Report saved: C:\Users\Owner\OneDrive\Documents\Python Scripts\MLE-Hiring\artifacts\underwriting_report.md
+2026-03-05 19:18:52 | INFO | __main__ | Pipeline complete. Artifacts in C:\Users\Owner\OneDrive\Documents\Python Scripts\MLE-Hiring\artifacts

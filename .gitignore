@@ -1,2 +1,21 @@
 # Internal only — do not share with candidates
 EVALUATION_RUBRIC.md
+
+# Virtual environment and secrets
+.venv/
+.env
+
+# Build and runtime
+artifacts/
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+.coverage
+htmlcov/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
