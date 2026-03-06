@@ -6,7 +6,7 @@ EVALUATION_RUBRIC.md
 .env
 
 # Build and runtime
-artifacts/
+# artifacts/  — unignored so pipeline outputs are visible on GitHub
 __pycache__/
 *.pyc
 *.pyo

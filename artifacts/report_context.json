@@ -1,0 +1,138 @@
+{
+  "portfolio_summary": {
+    "expected_high_risk_merchants": 3.46,
+    "average_predicted_risk": 0.0692,
+    "expected_loss_proxy": 4447.6,
+    "assumed_loss_rate": 0.02,
+    "n_merchants": 50
+  },
+  "model_metrics": {
+    "roc_auc": 1.0,
+    "precision": 1.0,
+    "recall": 1.0
+  },
+  "top_risk_merchants": [
+    {
+      "merchant_id": "M005",
+      "country": "United States",
+      "monthly_volume": 45000.0,
+      "dispute_rate": 0.0025,
+      "prob_high_risk": 0.88
+    },
+    {
+      "merchant_id": "M002",
+      "country": "United States",
+      "monthly_volume": 89000.0,
+      "dispute_rate": 0.002380952380952381,
+      "prob_high_risk": 0.84
+    },
+    {
+      "merchant_id": "M017",
+      "country": "United Kingdom",
+      "monthly_volume": 55000.0,
+      "dispute_rate": 0.0021164021164021165,
+      "prob_high_risk": 0.72
+    },
+    {
+      "merchant_id": "M041",
+      "country": "Romania",
+      "monthly_volume": 51000.0,
+      "dispute_rate": 0.002027027027027027,
+      "prob_high_risk": 0.52
+    },
+    {
+      "merchant_id": "M007",
+      "country": "United States",
+      "monthly_volume": 156000.0,
+      "dispute_rate": 0.0004878048780487805,
+      "prob_high_risk": 0.1
+    },
+    {
+      "merchant_id": "M015",
+      "country": "United Kingdom",
+      "monthly_volume": 92000.0,
+      "dispute_rate": 0.0009523809523809524,
+      "prob_high_risk": 0.08
+    },
+    {
+      "merchant_id": "M032",
+      "country": "United Kingdom",
+      "monthly_volume": 49000.0,
+      "dispute_rate": 0.0,
+      "prob_high_risk": 0.08
+    },
+    {
+      "merchant_id": "M010",
+      "country": "United Kingdom",
+      "monthly_volume": 52000.0,
+      "dispute_rate": 0.0012121212121212121,
+      "prob_high_risk": 0.06
+    },
+    {
+      "merchant_id": "M027",
+      "country": "United Kingdom",
+      "monthly_volume": 73000.0,
+      "dispute_rate": 0.0012244897959183673,
+      "prob_high_risk": 0.06
+    },
+    {
+      "merchant_id": "M004",
+      "country": "United Kingdom",
+      "monthly_volume": 78000.0,
+      "dispute_rate": 0.0,
+      "prob_high_risk": 0.04
+    }
+  ],
+  "risk_drivers": {
+    "high_dispute_rate_merchants": 4,
+    "total_merchants": 50,
+    "internal_risk_breakdown": {
+      "medium": 17,
+      "high": 17,
+      "low": 16
+    }
+  },
+  "scraped_claritypay_insights": {
+    "value_propositions": [
+      "Flexible payment plansfor the momentsthat matter",
+      "Pay-over-time plans with clear terms and service excellence \u2014 making important purchases possible with peace of mind.",
+      "From upfront clarity to better rates, flexible scheduling, and live support, ClarityPay makes managing big purchases simple.",
+      "Instant Pre-Approval, No Credit Impact",
+      "Understand full approval amounts and offers available with no hard pull credit pulls prior to commitment.**",
+      "Understand full approval amounts and offers available with no hard pull credit pulls prior to commitment."
+    ],
+    "partners": [
+      "ClarityPay logo",
+      "Google logo",
+      "Proud Partner",
+      "Club Wyndham logo",
+      "LaseyAway Logo",
+      "Safe Streets logo",
+      "Removery logo",
+      "Margaritaville Vacation Club logo"
+    ],
+    "public_stats": {
+      "18": "Last Published: Wed Feb 18 2026 14:03:27 GMT+0000 (Coordinated Universal Time)",
+      "2026": "Last Published: Wed Feb 18 2026 14:03:27 GMT+0000 (Coordinated Universal Time)",
+      "14": "Last Published: Wed Feb 18 2026 14:03:27 GMT+0000 (Coordinated Universal Time)",
+      "03": "Last Published: Wed Feb 18 2026 14:03:27 GMT+0000 (Coordinated Universal Time)",
+      "27": "Last Published: Wed Feb 18 2026 14:03:27 GMT+0000 (Coordinated Universal Time)",
+      "0000": "Last Published: Wed Feb 18 2026 14:03:27 GMT+0000 (Coordinated Universal Time)",
+      ",": "(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':\nnew Date().getTime(),event:'gtm.js'});var",
+      "0": "(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':\nnew Date().getTime(),event:'gtm.js'});var",
+      "9": "(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':\nnew Date().getTime(),event:'gtm.js'});var",
+      "5": "(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':\nnew Date().getTime(),event:'gtm.js'});var"
+    }
+  },
+  "pdf_insights": "MTPSMMSSCSInhreeteheeotaoeicccarsrnncrcctttr tiiineddghhohooasaoeaanlnnyslrcbnn d 123fuvatttl a :h omBcU ---gSi lksNuMKRne:a mldnPePimeimsaetyDLerk ebcp ri stFwdithbtlele eei iaaartruar ayim nMnmtms:smin tdysaem s.g o:n m rn (La ev5ccaSoapephhr0btcuslrparekbehvotm-lns r yia1nrmeetm.en 5o wvLDvet0uai tairrdieksrcsety l.wehpyG s Cd(a u pSa2B)ntoone0aPtun ds2m.tns e5hetipbrr-axm0ylleetn:1r )s daU-f 1olacne0rtnid t.tfde erNp adxseou tuK r dfm sois naarcmg nnhtdahcdetore miysom ceenfo.or s vrlRr lu iahcueltieestegss edid.s. iitCvsnraipo ettumhwioteep no saM:r .n 0 LrSye9E ep4a to4tctalr6tektiv2.mee3-e.9hn.otm: Te+.2.",
+  "assumptions": [
+    "High dispute risk defined as dispute_rate > 0.002.",
+    "Expected loss proxy uses 2% assumed loss rate on at-risk volume.",
+    "REST Countries used for region/subregion enrichment; cache in memory."
+  ],
+  "caveats": [
+    "Sample data only; not representative of production.",
+    "Model is baseline (Random Forest); no hyperparameter tuning.",
+    "External context (ClarityPay) is scraped; site structure may change."
+  ]
+}
